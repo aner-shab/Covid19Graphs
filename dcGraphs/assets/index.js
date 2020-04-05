@@ -12,22 +12,21 @@ Promise.all([
     var fatalityRatendx = crossfilter(fatalityRate);
     totalCasesRecorded(ndx, "#totalConfirmedCases")
     casesPerCountry(ndx, '#casesPerCountry')
+    dc.renderAll();
 });
 
 
 var totalCasesRecorded = (ndx, chartID) => {
     var totalCasesDim = ndx.dimension(dc.pluck('Total confirmed cases of COVID-19 (cases)'));
-    var totalCasesGroup = totalCasesDim.groupAll();
+    var totalCasesGroup = totalCasesDim.group().reduceCount(d => d.value);
     var totalCases = dc.numberDisplay(chartID);
     totalCases
     .formatNumber(d3.format('d'))
-    .valueAccessor(function(d) {
-        return +d.value;
-    })
+    .valueAccessor(d => +d.value)
     .group(totalCasesGroup)
 }
 
-function casesPerCountry(ndx, chartID) {
+var casesPerCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(dc.pluck('Entity'));
     var countryGroup = countryDim.group()
     var casesPerCountry = dc.pieChart(chartID)
