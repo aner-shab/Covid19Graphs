@@ -10,20 +10,40 @@ Promise.all([
     var dailyCasesndx = crossfilter(dailyCases);
     var casesVsDeathsndx = crossfilter(casesVsDeaths);
     var fatalityRatendx = crossfilter(fatalityRate);
-    totalCasesRecorded(ndx, "#totalConfirmedCases")
-    casesPerCountry(ndx, '#casesPerCountry')
+    totalCasesRecorded(ndx, "#totalConfirmedCases");
+    countryDropDown(ndx, '#countryDropDown')
+    casesPerCountry(ndx, '#casesPerCountry');
     dc.renderAll();
 });
 
 
 var totalCasesRecorded = (ndx, chartID) => {
-    var totalCasesDim = ndx.dimension(dc.pluck('Total confirmed cases of COVID-19 (cases)'));
-    var totalCasesGroup = totalCasesDim.group().reduceCount(d => d.value);
+    var totalCasesNumber = ndx.groupAll().reduce(
+        (p, v) => {
+            (v.Entity === "World") 
+            ? (v.Date === "Apr 5, 2020") 
+            ? p.cases = v['Total confirmed cases of COVID-19 (cases)']
+            : p
+            : p
+            return p
+        },
+        (p, v) => {
+            (v.Entity === "World") 
+            ? (v.Date === "Apr 5, 2020") 
+            ? p.cases = v['Total confirmed cases of COVID-19 (cases)']
+            : p
+            : p
+            return p;
+        },
+        () => {
+            return {cases: 0};
+        },
+    )
     var totalCases = dc.numberDisplay(chartID);
     totalCases
     .formatNumber(d3.format('d'))
-    .valueAccessor(d => +d.value)
-    .group(totalCasesGroup)
+    .valueAccessor(d => +d.cases)
+    .group(totalCasesNumber)
 }
 
 var casesPerCountry = (ndx, chartID) => {
