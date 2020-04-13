@@ -46,6 +46,17 @@ var totalCasesRecorded = (ndx, chartID) => {
     .group(totalCasesNumber)
 }
 
+var countryDropDown = (ndx, chartID) => {
+    var countriesDim = ndx.dimension(dc.pluck('Entity'));
+    var countrySelect = dc.selectMenu(chartID);
+    countrySelect
+    .dimension(countriesDim)
+    .group(countriesDim.group())
+    .multiple(true)
+    .numberVisible(10)
+    .controlsUseVisibility(true);
+}
+
 var casesPerCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(dc.pluck('Entity'));
     var countryGroup = countryDim.group()
