@@ -16,23 +16,39 @@ Promise.all([
     dc.renderAll();
 });
 
-
+// Total Cases in an individual country as of 5 April 2020
 var totalCasesRecorded = (ndx, chartID) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
-            (v.Entity === "World") 
-            ? (v.Date === "Apr 5, 2020") 
-            ? p.cases = v['Total confirmed cases of COVID-19 (cases)']
-            : p
-            : p
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
+                ? (v.Date === "Apr 5, 2020") 
+                ? p.cases += parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                : p
+                : p
             return p
         },
         (p, v) => {
-            (v.Entity === "World") 
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
             ? (v.Date === "Apr 5, 2020") 
-            ? p.cases = v['Total confirmed cases of COVID-19 (cases)']
+            ? p.cases -= parseInt(v['Total confirmed cases of COVID-19 (cases)'])
             : p
-            : p
+            : p 
             return p;
         },
         () => {
