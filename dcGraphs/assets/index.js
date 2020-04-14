@@ -1,3 +1,5 @@
+const TOTALCASES = 1195548
+
 // Load Data
 Promise.all([
   d3.csv('data/total-cases-covid-19.csv'),
@@ -11,6 +13,7 @@ Promise.all([
     var casesVsDeathsndx = crossfilter(casesVsDeaths);
     var fatalityRatendx = crossfilter(fatalityRate);
     totalCasesRecorded(ndx, "#totalConfirmedCases");
+    percentOfCases(ndx, '#countryPercent');
     countryDropDown(ndx, '#countryDropDown')
     casesPerCountry(ndx, '#casesPerCountry');
     dc.renderAll();
@@ -60,6 +63,51 @@ var totalCasesRecorded = (ndx, chartID) => {
     .formatNumber(d3.format('d'))
     .valueAccessor(d => +d.cases)
     .group(totalCasesNumber)
+}
+
+var percentOfCases = (ndx, chartID) => {
+    var totalCasesNumber = ndx.groupAll().reduce(
+        (p, v) => {
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
+                ? (v.Date === "Apr 5, 2020") 
+                ? p.cases += parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                : p
+                : p
+            return p
+        },
+        (p, v) => {
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
+            ? (v.Date === "Apr 5, 2020") 
+            ? p.cases -= parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+            : p
+            : p 
+            return p;
+        },
+        () => {
+            return {cases: 0};
+        },
+    )
+    var percentCases = dc.numberDisplay(chartID);
+    percentCases
+    .formatNumber(d3.format(".2%"))
+    .valueAccessor(d => (d.cases / TOTALCASES))
+    .group(totalCasesNumber);
 }
 
 var countryDropDown = (ndx, chartID) => {
