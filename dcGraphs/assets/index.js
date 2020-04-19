@@ -1,6 +1,7 @@
 const TOTALCASES = 1195548
 var formatTime = d3.timeParse("%b %e, %Y");
 
+
 // Load Data
 Promise.all([
   d3.csv('data/total-cases-covid-19.csv'),
@@ -23,7 +24,8 @@ Promise.all([
     dc.renderAll();
 });
 
-// Total Cases in an individual country as of 5 April 2020
+
+// Total Cases recorded as of 5 April 2020 Number Display
 var totalCasesRecorded = (ndx, chartID) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
@@ -69,6 +71,7 @@ var totalCasesRecorded = (ndx, chartID) => {
     .group(totalCasesNumber)
 }
 
+// Percent of Cases Number Display
 var percentOfCases = (ndx, chartID) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
@@ -114,6 +117,7 @@ var percentOfCases = (ndx, chartID) => {
     .group(totalCasesNumber);
 }
 
+// View Individual Country Dropdown
 var countryDropDown = (ndx, chartID) => {
     var countriesDim = ndx.dimension(dc.pluck('Entity'));
     var countrySelect = dc.selectMenu(chartID);
@@ -125,28 +129,76 @@ var countryDropDown = (ndx, chartID) => {
     .controlsUseVisibility(true);
 }
 
+// Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID) => {
     var dateDim = ndx.dimension(d => d.date);
     var countryDim = ndx.dimension(d => [d.Entity, d.date]);
-    var countryGroup = countryDim.group().reduceSum(d => +d['Total confirmed cases of COVID-19 (cases)']);
-    var minDate = dateDim.bottom(1)[0].date;
+    var countryGroup = countryDim.group().reduce(
+        (p, v) => {
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
+                ? p.cases += parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                : p
+            return p;
+        },
+        (p, v) => {
+            (
+                !(v.Entity).includes("World") &&
+                !(v.Entity).includes("Oceania") &&
+                !(v.Entity).includes("North America") &&
+                !(v.Entity).includes("Africa") &&
+                !(v.Entity).includes("Asia") &&
+                !(v.Entity).includes("International") &&
+                !(v.Entity).includes("Europe")
+            )
+                ? p.cases -= parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                : p
+            return p;
+        },
+        () => {
+            return {cases: 0};
+        },
+    )
+    var filteredCountryGroup = remove_empty_bins(countryGroup)
+    var minDate = dateDim.bottom(100)[0].date;
     var maxDate = dateDim.top(1)[0].date;
     var casesPerCountry = dc.seriesChart(chartID);
     casesPerCountry
-    .width(768)
-    .height(480)
+    .width(1500)
+    .height(600)
     .chart(function(c) { return dc.lineChart(c).curve(d3.curveBasis); })
     .seriesSort(d3.descending)
     .x(d3.scaleTime().domain([minDate,maxDate]))
+    .brushOn(false)
     .yAxisLabel("Confirmed COVID-19 Cases")
     .xAxisLabel("Date")
     .clipPadding(10)
     .elasticY(true)
     .dimension(countryDim)
-    .group(countryGroup)
+    .group(filteredCountryGroup)
+    .mouseZoomable(true)
     .seriesAccessor(d =>  "Country: " + d.key[0])
     .keyAccessor(d => d.key[1])
-    .valueAccessor(d => +d.value)
-    .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+    .valueAccessor(function(d) {console.log(d); return d.value.cases})
+    .title(d => `${d.key[0]}: ${d.value.cases} cases on ${(d.key[1]).toLocaleDateString()}`)
     casesPerCountry.margins().left += 40;
+}
+
+// Remove Empty Groups - Taken from: 
+// https://github.com/dc-js/dc.js/wiki/FAQ#how-do-i-filter-the-data-before-its-charted
+function remove_empty_bins(source_group) {
+    return {
+        all:function () {
+            return source_group.all().filter(function(d) {
+                return d.value !== 0;
+            });
+        }
+    };
 }
