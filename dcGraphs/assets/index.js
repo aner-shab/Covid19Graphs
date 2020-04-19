@@ -1,4 +1,5 @@
 const TOTALCASES = 1195548
+var formatTime = d3.timeParse("%b %e, %Y");
 
 // Load Data
 Promise.all([
@@ -8,6 +9,9 @@ Promise.all([
   d3.csv('data/coronavirus-cfr.csv')
 ])
 .then(([totalCases, dailyCases, casesVsDeaths, fatalityRate]) =>  {
+    for (let d of totalCases) {
+        d.date = formatTime(d.Date)
+    }
     var ndx = crossfilter(totalCases);
     var dailyCasesndx = crossfilter(dailyCases);
     var casesVsDeathsndx = crossfilter(casesVsDeaths);
@@ -122,12 +126,27 @@ var countryDropDown = (ndx, chartID) => {
 }
 
 var casesPerCountry = (ndx, chartID) => {
-    var countryDim = ndx.dimension(dc.pluck('Entity'));
-    var countryGroup = countryDim.group()
-    var casesPerCountry = dc.pieChart(chartID)
+    var dateDim = ndx.dimension(d => d.date);
+    var countryDim = ndx.dimension(d => [d.Entity, d.date]);
+    var countryGroup = countryDim.group().reduceSum(d => +d['Total confirmed cases of COVID-19 (cases)']);
+    var minDate = dateDim.bottom(1)[0].date;
+    var maxDate = dateDim.top(1)[0].date;
+    var casesPerCountry = dc.seriesChart(chartID);
     casesPerCountry
     .width(768)
     .height(480)
+    .chart(function(c) { return dc.lineChart(c).curve(d3.curveBasis); })
+    .seriesSort(d3.descending)
+    .x(d3.scaleTime().domain([minDate,maxDate]))
+    .yAxisLabel("Confirmed COVID-19 Cases")
+    .xAxisLabel("Date")
+    .clipPadding(10)
+    .elasticY(true)
     .dimension(countryDim)
     .group(countryGroup)
+    .seriesAccessor(d =>  "Country: " + d.key[0])
+    .keyAccessor(d => d.key[1])
+    .valueAccessor(d => +d.value)
+    .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+    casesPerCountry.margins().left += 40;
 }
