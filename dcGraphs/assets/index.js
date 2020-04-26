@@ -1,5 +1,7 @@
 const TOTALCASES = 1195548
 var formatTime = d3.timeParse("%b %e, %Y");
+var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
+var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 
 
 // Load Data
@@ -13,6 +15,9 @@ Promise.all([
     for (let d of totalCases) {
         d.date = formatTime(d.Date)
     }
+    for (let d of dailyCases) {
+        d.date = formatTime(d.Date)
+    }
     var ndx = crossfilter(totalCases);
     var dailyCasesndx = crossfilter(dailyCases);
     var casesVsDeathsndx = crossfilter(casesVsDeaths);
@@ -20,7 +25,8 @@ Promise.all([
     totalCasesRecorded(ndx, "#totalConfirmedCases");
     percentOfCases(ndx, '#countryPercent');
     countryDropDown(ndx, '#countryDropDown')
-    casesPerCountry(ndx, '#casesPerCountry');
+    casesPerCountry(ndx, dailyCasesndx, totalCasesPerCountry, 'Total confirmed cases of COVID-19 (cases)');
+    casesPerCountry(dailyCasesndx, ndx, dailyCasesPerCountry, 'Daily confirmed cases (cases)')
     dc.renderAll();
 });
 
@@ -117,22 +123,21 @@ var percentOfCases = (ndx, chartID) => {
     .group(totalCasesNumber);
 }
 
+var countrySelect = dc.selectMenu('#countryDropDown');
 // View Individual Country Dropdown
 var countryDropDown = (ndx, chartID) => {
     var countriesDim = ndx.dimension(dc.pluck('Entity'));
-    var countrySelect = dc.selectMenu(chartID);
     countrySelect
     .dimension(countriesDim)
     .group(countriesDim.group())
-    .multiple(true)
-    .numberVisible(10)
     .controlsUseVisibility(true);
 }
 
 // Cases Per Country seriesChart
-var casesPerCountry = (ndx, chartID) => {
+var casesPerCountry = (ndx, otherndx, chartID, casesCountType) => {
     var dateDim = ndx.dimension(d => d.date);
     var countryDim = ndx.dimension(d => [d.Entity, d.date]);
+    var mirrorCountryDim = otherndx.dimension(d => [d.Entity, d.date])
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
             (
@@ -144,7 +149,7 @@ var casesPerCountry = (ndx, chartID) => {
                 !(v.Entity).includes("International") &&
                 !(v.Entity).includes("Europe")
             )
-                ? p.cases += parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                ? p.cases += parseInt(v[casesCountType])
                 : p
             return p;
         },
@@ -158,7 +163,7 @@ var casesPerCountry = (ndx, chartID) => {
                 !(v.Entity).includes("International") &&
                 !(v.Entity).includes("Europe")
             )
-                ? p.cases -= parseInt(v['Total confirmed cases of COVID-19 (cases)'])
+                ? p.cases -= parseInt(v[casesCountType])
                 : p
             return p;
         },
@@ -167,28 +172,26 @@ var casesPerCountry = (ndx, chartID) => {
         },
     )
     var filteredCountryGroup = remove_empty_bins(countryGroup)
-    var minDate = dateDim.bottom(100)[0].date;
+    var minDate = formatTime("Jan 25, 2020")
     var maxDate = dateDim.top(1)[0].date;
-    var casesPerCountry = dc.seriesChart(chartID);
-    casesPerCountry
-    .width(1500)
+    chartID
+    .width(1200)
     .height(600)
-    .chart(function(c) { return dc.lineChart(c).curve(d3.curveBasis); })
+    .chart(c => dc.lineChart(c).curve(d3.curveBasis))
     .seriesSort(d3.descending)
     .x(d3.scaleTime().domain([minDate,maxDate]))
     .brushOn(false)
-    .yAxisLabel("Confirmed COVID-19 Cases")
+    .yAxisLabel(casesCountType)
     .xAxisLabel("Date")
     .clipPadding(10)
     .elasticY(true)
     .dimension(countryDim)
     .group(filteredCountryGroup)
-    .mouseZoomable(true)
     .seriesAccessor(d =>  "Country: " + d.key[0])
     .keyAccessor(d => d.key[1])
-    .valueAccessor(function(d) {console.log(d); return d.value.cases})
+    .valueAccessor(d => d.value.cases)
     .title(d => `${d.key[0]}: ${d.value.cases} cases on ${(d.key[1]).toLocaleDateString()}`)
-    casesPerCountry.margins().left += 40;
+    chartID.margins().left += 40;
 }
 
 // Remove Empty Groups - Taken from: 
@@ -202,3 +205,5 @@ function remove_empty_bins(source_group) {
         }
     };
 }
+
+
