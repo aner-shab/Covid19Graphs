@@ -1,4 +1,4 @@
-const TOTALCASES = 2619872;
+const TOTALCASES = 2624252;
 var formatTime = d3.timeParse("%Y-%m-%d");
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
@@ -31,32 +31,19 @@ var totalCasesRecorded = (ndx, chartID) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
+                v.date === "2020-04-26"
             )
-                ? (v.date === '2020-04-26') 
                 ? p.cases += parseInt(v['Total Cases'])
-                : p
                 : p
             return p
         },
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
+                v.date === "2020-04-26"
             )
-            ? (v.date === "2020-04-26") 
             ? p.cases -= parseInt(v['Total Cases'])
             : p
-            : p 
+
             return p;
         },
         () => {
@@ -75,32 +62,18 @@ var percentOfCases = (ndx, chartID) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
+                v.date === '2020-04-26'
             )
-                ? (v.date === '2020-04-26') 
                 ? p.cases += parseInt(v['Total Cases'])
-                : p
                 : p
             return p
         },
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
+                v.date === "2020-04-26"
             )
-            ? (v.date === "2020-04-26") 
             ? p.cases -= parseInt(v['Total Cases'])
             : p
-            : p 
             return p;
         },
         () => {
@@ -133,12 +106,6 @@ var highestCasesPerCountry = (ndx, chartID) => {
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe") &&
                 v.date === '2020-04-26'
             )
                 ? p.cases += parseInt(v['Total Cases'])
@@ -147,12 +114,6 @@ var highestCasesPerCountry = (ndx, chartID) => {
         },
         (p, v) => {
             (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe") &&
                 v.date === '2020-04-26'
             )
             ? p.cases -= parseInt(v['Total Cases'])
@@ -202,29 +163,11 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     var countryDim = ndx.dimension(d => [d.location, d.Date]);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
-            (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
-            )
-                ? p.cases += parseInt(v[casesCountType])
-                : p
+            p.cases += parseInt(v[casesCountType])
             return p;
         },
         (p, v) => {
-            (
-                !(v.location).includes("World") &&
-                !(v.location).includes("Oceania") &&
-                !(v.location).includes("North America") &&
-                !(v.location).includes("Africa") &&
-                !(v.location).includes("Asia") &&
-                !(v.location).includes("Europe")
-            )
-                ? p.cases -= parseInt(v[casesCountType])
-                : p
+            p.cases -= parseInt(v[casesCountType])
             return p;
         },
         () => {
