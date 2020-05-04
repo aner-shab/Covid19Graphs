@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="libraries/dc.min.css">
     <link rel="stylesheet" href="libraries/semantic.min.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="libraries/jquery.min.js"></script>
+    <script src="assets/graphStyles.js"></script>
+    <title>COVID-19 DC.js Dashboard</title>
 </head>
 <body>
+    <div class="loading-gif"></div>
     <h1>Covid 19 Mini Dashboard</h1>
     <div id="totalConfirmedCases"></div>
     <div id="countryPercent"></div>
@@ -15,7 +19,7 @@
     <div id="select-direction">
         <label><input type=radio name="direction" value="descending" checked="true">&nbsp;descending</label>
         <label><input type=radio name="direction" value="ascending">&nbsp;ascending</label>
-      </div>
+    </div>
     <table id="topCountries">
         <thead>
             <tr>
@@ -27,13 +31,13 @@
     <div id="totalCasesPerCountry"></div>
     <div id="dailyCasesPerCountry"></div>
     <div id="fatalityRatePerCountry"></div>
-    <script src="libraries/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
     <script src="libraries/semantic.min.js"></script>
+
     <script src="libraries/d3.v5.min.js"></script>
     <script src="libraries/crossfilter.min.js"></script>
     <script src="libraries/dc.min.js"></script>
     <script src="libraries/queue.min.js"></script>
     <script src="assets/index.js"></script>
-    <script src="assets/graphStyles.js"></script>
 </body>
 </html>

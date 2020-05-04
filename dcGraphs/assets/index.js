@@ -114,7 +114,7 @@ var highestCasesPerCountry = (ndx, chartID) => {
         },
         (p, v) => {
             (
-                v.date === '2020-04-26'
+                v.date === "2020-04-26"
             )
             ? p.cases -= parseInt(v['Total Cases'])
             : p
@@ -145,6 +145,7 @@ var highestCasesPerCountry = (ndx, chartID) => {
       });
 }
 
+// Fake Dimension to Wrap the Group to sort - Taken From: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/table-on-aggregated-data.html
   function reversible_group(group) {
       return {
           top: function(N) {
