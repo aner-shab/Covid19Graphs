@@ -17,6 +17,7 @@ Promise.all([
     totalCasesRecorded(allCovidndx, "#totalConfirmedCases");
     percentOfCases(allCovidndx, '#countryPercent');
     countryDropDown(allCovidndx, '#countryDropDown');
+    highestCasesPerCountry(allCovidndx, '#topCountries');
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
@@ -35,7 +36,6 @@ var totalCasesRecorded = (ndx, chartID) => {
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
                 ? (v.date === '2020-04-26') 
@@ -51,7 +51,6 @@ var totalCasesRecorded = (ndx, chartID) => {
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
             ? (v.date === "2020-04-26") 
@@ -81,7 +80,6 @@ var percentOfCases = (ndx, chartID) => {
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
                 ? (v.date === '2020-04-26') 
@@ -97,7 +95,6 @@ var percentOfCases = (ndx, chartID) => {
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
             ? (v.date === "2020-04-26") 
@@ -122,12 +119,82 @@ var percentOfCases = (ndx, chartID) => {
 var countryDropDown = (ndx, chartID) => {
     var countriesDim = ndx.dimension(dc.pluck('location'));
     var countriesGroup = countriesDim.group();
-    var countrySelect = dc.selectMenu('#countryDropDown');
+    var countrySelect = dc.selectMenu(chartID);
     countrySelect
     .dimension(countriesDim)
     .group(countriesGroup)
     .controlsUseVisibility(true);
 }
+
+
+// Table Showing the Countries with the highest case count
+var highestCasesPerCountry = (ndx, chartID) => {
+    var countryDim = ndx.dimension(d => d.location);
+    var countryGroup = countryDim.group().reduce(
+        (p, v) => {
+            (
+                !(v.location).includes("World") &&
+                !(v.location).includes("Oceania") &&
+                !(v.location).includes("Africa") &&
+                !(v.location).includes("North America") &&
+                !(v.location).includes("Asia") &&
+                !(v.location).includes("Europe") &&
+                v.date === '2020-04-26'
+            )
+                ? p.cases += parseInt(v['Total Cases'])
+                : p
+            return p
+        },
+        (p, v) => {
+            (
+                !(v.location).includes("World") &&
+                !(v.location).includes("Oceania") &&
+                !(v.location).includes("North America") &&
+                !(v.location).includes("Africa") &&
+                !(v.location).includes("Asia") &&
+                !(v.location).includes("Europe") &&
+                v.date === '2020-04-26'
+            )
+            ? p.cases -= parseInt(v['Total Cases'])
+            : p
+            return p;
+        },
+        () => {
+            return {cases: 0};
+        },
+    )
+    var countryTable = dc.dataTable(chartID)
+    countryTable
+    .width(768)
+    .height(480)
+    .dimension(reversible_group(countryGroup))
+    .columns([d => d.key,
+              d => d.value.cases])
+    .sortBy(d => d.value.cases)
+    .order(d3.descending)
+    .size(Infinity)
+    .endSlice(15)
+    .showSections(true)
+    countryTable.render();
+
+    d3.selectAll('#select-direction input')
+      .on('click', function() {
+          // this.value is 'ascending' or 'descending'
+          countryTable.order(d3[this.value]).redraw()
+      });
+}
+
+  function reversible_group(group) {
+      return {
+          top: function(N) {
+              return group.top(N);
+          },
+          bottom: function(N) {
+              return group.top(Infinity).slice(-N).reverse();
+          }
+      };
+  }
+
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID, casesCountType) => {
@@ -141,7 +208,6 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
                 ? p.cases += parseInt(v[casesCountType])
@@ -155,7 +221,6 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
                 !(v.location).includes("North America") &&
                 !(v.location).includes("Africa") &&
                 !(v.location).includes("Asia") &&
-                !(v.location).includes("International") &&
                 !(v.location).includes("Europe")
             )
                 ? p.cases -= parseInt(v[casesCountType])
@@ -200,3 +265,4 @@ function remove_empty_bins(source_group) {
         }
     };
 }
+
