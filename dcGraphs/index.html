@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="libraries/font_awesome/all.min.css">
     <link rel="stylesheet" href="libraries/css/dc.min.css">
     <link rel="stylesheet" href="libraries/css/semantic.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -12,25 +13,65 @@
 </head>
 <body>
     <div class="loading-gif"></div>
-    <h1>Covid 19 Mini Dashboard</h1>
-    <div id="totalConfirmedCases"></div>
-    <div id="countryPercent"></div>
-    <div id="countryDropDown"></div>
-    <div id="select-direction">
-        <label><input type=radio name="direction" value="descending" checked="true">&nbsp;descending</label>
-        <label><input type=radio name="direction" value="ascending">&nbsp;ascending</label>
+    <div class="ui raised very padded text container raised segment">
+        <h1 class="ui icon header">
+            <i class="fas fa-viruses icon"></i>
+            <div class="content">
+                COVID-19 Mini Dashboard
+            </div>
+        </h1>
+        <p>Some info about the COVID Graphs/Situation to go here.</p>
     </div>
-    <table id="topCountries">
-        <thead>
-            <tr>
-                <th>Country</th>
-                <th>Total Cases</th>
-            </tr>
-        </thead>
-    </table>
-    <div id="totalCasesPerCountry"></div>
-    <div id="dailyCasesPerCountry"></div>
-    <div id="fatalityRatePerCountry"></div>
+    <div class="ui statistic raised segment">
+        <h3 class="label">
+            Total Confirmed Cases
+        </h3>
+        <div id="totalConfirmedCases"></div>
+    </div>
+    <div class="ui statistic raised segment">
+        <h3 class="label">
+            Percentage of Global Cases
+        </h3>
+        <div id="countryPercent"></div>
+        </div>
+    <div class="ui raised segment">
+        <div id="countryDropDown" class='ui sub header'>Choose Country</div>
+    </div>
+    <div class="ui raised segment">
+        <div id="select-direction" class="ui form">
+            <div class="inline fields">
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="radio" value="descending" checked="checked">
+                        <label>descending</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="radio" value="ascending">
+                        <label>ascending</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="topCountries" class="ui celled striped teal table">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Total Cases</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="ui raised segment">
+        <div id="totalCasesPerCountry"></div>
+    </div>
+    <div class="ui raised segment">
+        <div id="dailyCasesPerCountry"></div>
+    </div>
+    <div class="ui raised segment">
+        <div id="fatalityRatePerCountry"></div>
+    </div>
     <script src="libraries/js/semantic.min.js"></script>
     <script src="libraries/js/d3.v5.min.js"></script>
     <script src="libraries/js/crossfilter.min.js"></script>

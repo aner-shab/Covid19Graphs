@@ -8,3 +8,13 @@ height: 100%;
 z-index: 9999;
 background: url(https://media.giphy.com/media/mBuuwdbwYhiIj35kUL/source.gif) center no-repeat #F7F1EF;
 }
+
+body {
+    background-color: #fafafa;
+}
+
+/* Table */
+
+td.dc-table-label {
+    display: none;
+}

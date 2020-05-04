@@ -97,6 +97,11 @@ var countryDropDown = (ndx, chartID) => {
     .dimension(countriesDim)
     .group(countriesGroup)
     .controlsUseVisibility(true);
+
+    countrySelect.on('pretransition', function(countrySelect){
+        countrySelect.select('select').classed('ui selection dropdown', true);
+        // countrySelect.select('select').attr('multiple', "");
+    });
 }
 
 
