@@ -1,34 +1,25 @@
-const TOTALCASES = 2619872
-// var formatTime = d3.timeParse("%b %e, %Y");
-var formatTime = d3.timeParse('Y%-%m-%d');
+const TOTALCASES = 2619872;
+var formatTime = d3.timeParse("%Y-%m-%d");
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
+var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 
 
 // Load Data
 Promise.all([
-  d3.csv('data/total-cases-covid-19.csv'),
-  d3.csv('data/daily-cases-covid-19.csv'),
-  d3.csv('data/covid-19-total-confirmed-cases-vs-total-confirmed-deaths.csv'),
-  d3.csv('data/coronavirus-cfr.csv'), 
   d3.csv('data/owid-covid-data.csv')
 ])
-.then(([totalCases, dailyCases, casesVsDeaths, fatalityRate, allCovid]) =>  {
+.then(([allCovid]) =>  {
     for (let d of allCovid) {
-        console.log(d);
         d.Date = formatTime(d.date);
-        console.log(d.Date);
     }
-    var ndx = crossfilter(totalCases);
-    var dailyCasesndx = crossfilter(dailyCases);
-    var casesVsDeathsndx = crossfilter(casesVsDeaths);
-    var fatalityRatendx = crossfilter(fatalityRate);
     var allCovidndx = crossfilter(allCovid);
     totalCasesRecorded(allCovidndx, "#totalConfirmedCases");
     percentOfCases(allCovidndx, '#countryPercent');
     countryDropDown(allCovidndx, '#countryDropDown');
-    casesPerCountry(allCovidndx, totalCasesPerCountry, 'total_cases');
-    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'new_cases')
+    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
+    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
     
     dc.renderAll();
 });
@@ -48,7 +39,7 @@ var totalCasesRecorded = (ndx, chartID) => {
                 !(v.location).includes("Europe")
             )
                 ? (v.date === '2020-04-26') 
-                ? p.cases += parseInt(v['total_cases'])
+                ? p.cases += parseInt(v['Total Cases'])
                 : p
                 : p
             return p
@@ -64,7 +55,7 @@ var totalCasesRecorded = (ndx, chartID) => {
                 !(v.location).includes("Europe")
             )
             ? (v.date === "2020-04-26") 
-            ? p.cases -= parseInt(v['total_cases'])
+            ? p.cases -= parseInt(v['Total Cases'])
             : p
             : p 
             return p;
@@ -94,7 +85,7 @@ var percentOfCases = (ndx, chartID) => {
                 !(v.location).includes("Europe")
             )
                 ? (v.date === '2020-04-26') 
-                ? p.cases += parseInt(v['total_cases'])
+                ? p.cases += parseInt(v['Total Cases'])
                 : p
                 : p
             return p
@@ -110,7 +101,7 @@ var percentOfCases = (ndx, chartID) => {
                 !(v.location).includes("Europe")
             )
             ? (v.date === "2020-04-26") 
-            ? p.cases -= parseInt(v['total_cases'])
+            ? p.cases -= parseInt(v['Total Cases'])
             : p
             : p 
             return p;
@@ -126,11 +117,12 @@ var percentOfCases = (ndx, chartID) => {
     .group(totalCasesNumber);
 }
 
-var countrySelect = dc.selectMenu('#countryDropDown');
+
 // View Individual Country Dropdown
 var countryDropDown = (ndx, chartID) => {
     var countriesDim = ndx.dimension(dc.pluck('location'));
-    var countriesGroup = countriesDim.group()
+    var countriesGroup = countriesDim.group();
+    var countrySelect = dc.selectMenu('#countryDropDown');
     countrySelect
     .dimension(countriesDim)
     .group(countriesGroup)
@@ -139,8 +131,8 @@ var countryDropDown = (ndx, chartID) => {
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID, casesCountType) => {
-    var dateDim = ndx.dimension(d => d.date);
-    var countryDim = ndx.dimension(d => [d.location, d.date]);
+    var dateDim = ndx.dimension(d => d.Date);
+    var countryDim = ndx.dimension(d => [d.location, d.Date]);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
             (
@@ -176,9 +168,7 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     )
     var filteredCountryGroup = remove_empty_bins(countryGroup);
     var minDate = formatTime("2020-01-25");
-    var maxDate = dateDim.top(1)[0].date;
-    console.log(minDate);
-    console.log(maxDate);
+    var maxDate = dateDim.top(1)[0].Date;
     chartID
     .width(1200)
     .height(600)
@@ -189,7 +179,7 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     .yAxisLabel(casesCountType)
     .xAxisLabel("Date")
     .clipPadding(10)
-    // .elasticY(true)
+    .elasticY(true)
     .dimension(countryDim)
     .group(filteredCountryGroup)
     .seriesAccessor(d =>  "Country: " + d.key[0])
@@ -210,5 +200,3 @@ function remove_empty_bins(source_group) {
         }
     };
 }
-
-

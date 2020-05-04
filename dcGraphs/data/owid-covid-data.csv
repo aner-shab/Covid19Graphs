@@ -1,4 +1,4 @@
-iso_code,location,date,total_cases,new_cases,total_deaths,new_deaths,total_cases_per_million,new_cases_per_million,total_deaths_per_million,new_deaths_per_million,total_tests,new_tests,total_tests_per_thousand,new_tests_per_thousand,tests_units
+iso_code,location,date,Total Cases,New Cases,Total Deaths,new_deaths,total_cases_per_million,new_cases_per_million,total_deaths_per_million,new_deaths_per_million,total_tests,new_tests,total_tests_per_thousand,new_tests_per_thousand,tests_units
 ABW,Aruba,2020-03-13,2,2,0,0,18.733,18.733,0.0,0.0,,,,,
 ABW,Aruba,2020-03-20,4,2,0,0,37.465,18.733,0.0,0.0,,,,,
 ABW,Aruba,2020-03-24,12,8,0,0,112.395,74.93,0.0,0.0,,,,,
