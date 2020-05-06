@@ -1,5 +1,7 @@
 const TOTALCASES = 2624252;
 var formatTime = d3.timeParse("%Y-%m-%d");
+var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
+var totalDeathsRecorded = dc.numberDisplay('#totalDeaths')
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
@@ -14,7 +16,8 @@ Promise.all([
         d.Date = formatTime(d.date);
     }
     var allCovidndx = crossfilter(allCovid);
-    totalCasesRecorded(allCovidndx, "#totalConfirmedCases");
+    aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
+    aggregateNumber(allCovidndx, totalDeathsRecorded, 'Total Deaths');
     percentOfCases(allCovidndx, '#countryPercent');
     countryDropDown(allCovidndx, '#countryDropDown');
     highestCasesPerCountry(allCovidndx, '#topCountries');
@@ -27,13 +30,13 @@ Promise.all([
 
 
 // Total Cases recorded as of 5 April 2020 Number Display
-var totalCasesRecorded = (ndx, chartID) => {
+var aggregateNumber = (ndx, chartID, column) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
             (
                 v.date === "2020-04-26"
             )
-                ? p.cases += parseInt(v['Total Cases'])
+                ? p.cases += parseInt(v[column])
                 : p
             return p
         },
@@ -41,7 +44,7 @@ var totalCasesRecorded = (ndx, chartID) => {
             (
                 v.date === "2020-04-26"
             )
-            ? p.cases -= parseInt(v['Total Cases'])
+            ? p.cases -= parseInt(v[column])
             : p
 
             return p;
@@ -50,8 +53,7 @@ var totalCasesRecorded = (ndx, chartID) => {
             return {cases: 0};
         },
     )
-    var totalCases = dc.numberDisplay(chartID);
-    totalCases
+    chartID
     .formatNumber(d3.format('d'))
     .valueAccessor(d => +d.cases)
     .group(totalCasesNumber)
