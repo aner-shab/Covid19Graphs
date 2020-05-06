@@ -23,21 +23,37 @@
         <p>Some info about the COVID Graphs/Situation to go here.</p>
     </div>
     <div class="ui statistic raised segment">
-        <h3 class="label">
+        <h2 class="label ui right floated header">
             Total Confirmed Cases
-        </h3>
+        </h2>
+        <div class="ui clearing divider"></div>
         <div id="totalConfirmedCases"></div>
     </div>
     <div class="ui statistic raised segment">
-        <h3 class="label">
+        <h2 class="label ui right floated header">
+            Total Fatalities
+        </h2>
+        <div class="ui clearing divider"></div>
+        <div id="totalDeaths"></div>
+    </div>
+    <div class="ui statistic raised segment">
+        <h2 class="label ui right floated header">
             Percentage of Global Cases
-        </h3>
+        </h2>
+        <div class="ui clearing divider"></div>
         <div id="countryPercent"></div>
         </div>
     <div class="ui raised segment">
-        <div id="countryDropDown" class='ui sub header'>Choose Country</div>
+        <h2 class="label ui left floated header">
+                View Statistics By Country
+        </h2>
+        <div class="ui clearing divider"></div>
+        <div id="countryDropDown" class='ui sub header'></div>
     </div>
     <div class="ui raised segment">
+        <h2 class="label ui left floated header">
+            Cases per Country
+        </h2>
         <div id="select-direction" class="ui form">
             <div class="inline fields">
                 <div class="field">
@@ -54,6 +70,7 @@
                 </div>
             </div>
         </div>
+        <div class="ui clearing divider"></div>
         <table id="topCountries" class="ui celled striped teal table">
             <thead>
                 <tr>
@@ -64,12 +81,24 @@
         </table>
     </div>
     <div class="ui raised segment">
+        <h2 class="label ui left floated header">
+            Total Cases Per Country From January to April
+        </h2>
+        <div class="ui clearing divider"></div>
         <div id="totalCasesPerCountry"></div>
     </div>
     <div class="ui raised segment">
+        <h2 class="label ui left floated header">
+            Daily Cases Per Country From January to April
+        </h2>
+        <div class="ui clearing divider"></div>
         <div id="dailyCasesPerCountry"></div>
     </div>
     <div class="ui raised segment">
+        <h2 class="label ui left floated header">
+            Fatalities Per Country From January to April
+        </h2>
+        <div class="ui clearing divider"></div>
         <div id="fatalityRatePerCountry"></div>
     </div>
     <script src="libraries/js/semantic.min.js"></script>
