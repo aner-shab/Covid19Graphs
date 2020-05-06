@@ -1,7 +1,10 @@
 const TOTALCASES = 2624252;
+const TOTALDEATHS = 178784;
 var formatTime = d3.timeParse("%Y-%m-%d");
 var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
-var totalDeathsRecorded = dc.numberDisplay('#totalDeaths')
+var totalDeathsRecorded = dc.numberDisplay('#totalDeaths');
+var percentageOfCases = dc.numberDisplay('#countryCasePercent');
+var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
@@ -18,7 +21,8 @@ Promise.all([
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
     aggregateNumber(allCovidndx, totalDeathsRecorded, 'Total Deaths');
-    percentOfCases(allCovidndx, '#countryPercent');
+    aggregatePercentage(allCovidndx, percentageOfCases, 'Total Cases', TOTALCASES);
+    aggregatePercentage(allCovidndx, percentageOfDeaths, 'Total Deaths', TOTALDEATHS);
     countryDropDown(allCovidndx, '#countryDropDown');
     highestCasesPerCountry(allCovidndx, '#topCountries');
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
@@ -60,13 +64,13 @@ var aggregateNumber = (ndx, chartID, column) => {
 }
 
 // Percent of Cases Number Display
-var percentOfCases = (ndx, chartID) => {
+var aggregatePercentage = (ndx, chartID, column, TOTAL) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
             (
                 v.date === '2020-04-26'
             )
-                ? p.cases += parseInt(v['Total Cases'])
+                ? p.cases += parseInt(v[column])
                 : p
             return p
         },
@@ -74,7 +78,7 @@ var percentOfCases = (ndx, chartID) => {
             (
                 v.date === "2020-04-26"
             )
-            ? p.cases -= parseInt(v['Total Cases'])
+            ? p.cases -= parseInt(v[column])
             : p
             return p;
         },
@@ -82,10 +86,9 @@ var percentOfCases = (ndx, chartID) => {
             return {cases: 0};
         },
     )
-    var percentCases = dc.numberDisplay(chartID);
-    percentCases
+    chartID
     .formatNumber(d3.format(".2%"))
-    .valueAccessor(d => (d.cases / TOTALCASES))
+    .valueAccessor(d => (d.cases / TOTAL))
     .group(totalCasesNumber);
 }
 
