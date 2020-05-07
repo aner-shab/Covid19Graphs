@@ -1,10 +1,13 @@
 const TOTALCASES = 2624252;
 const TOTALDEATHS = 178784;
+const TOTALRECOVER = 2445468;
 var formatTime = d3.timeParse("%Y-%m-%d");
 var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
 var totalDeathsRecorded = dc.numberDisplay('#totalDeaths');
+var totalRecoveries = dc.numberDisplay('#totalRecoveries');
 var percentageOfCases = dc.numberDisplay('#countryCasePercent');
 var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
+var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
@@ -17,12 +20,15 @@ Promise.all([
 .then(([allCovid]) =>  {
     for (let d of allCovid) {
         d.Date = formatTime(d.date);
+        d.recoveries = calculateRecoveries(d['Total Cases'], d['Total Deaths']);
     }
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
     aggregateNumber(allCovidndx, totalDeathsRecorded, 'Total Deaths');
+    aggregateNumber(allCovidndx, totalRecoveries, 'recoveries');
     aggregatePercentage(allCovidndx, percentageOfCases, 'Total Cases', TOTALCASES);
     aggregatePercentage(allCovidndx, percentageOfDeaths, 'Total Deaths', TOTALDEATHS);
+    aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries', TOTALRECOVER);
     countryDropDown(allCovidndx, '#countryDropDown');
     highestCasesPerCountry(allCovidndx, '#topCountries');
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
@@ -32,6 +38,9 @@ Promise.all([
     dc.renderAll();
 });
 
+var calculateRecoveries = (total_cases, total_deaths) => {
+    return total_cases - total_deaths;
+}
 
 // Total Cases recorded as of 5 April 2020 Number Display
 var aggregateNumber = (ndx, chartID, column) => {
@@ -105,7 +114,6 @@ var countryDropDown = (ndx, chartID) => {
 
     countrySelect.on('pretransition', function(countrySelect){
         countrySelect.select('select').classed('ui selection dropdown', true);
-        // countrySelect.select('select').attr('multiple', "");
     });
 }
 

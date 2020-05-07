@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="libraries/font_awesome/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link rel="stylesheet" href="libraries/css/dc.min.css">
     <link rel="stylesheet" href="libraries/css/semantic.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -50,9 +50,23 @@
         <div class="ui clearing divider"></div>
         <div id="countryDeathPercent"></div>
     </div>
+    <div class="ui statistic raised segment">
+        <h2 class="label ui right floated header">
+            Total Recoveries
+        </h2>
+        <div class="ui clearing divider"></div>
+        <div id="totalRecoveries"></div>
+    </div>
+    <div class="ui statistic raised segment">
+        <h2 class="label ui right floated header">
+            Percentage of Recoveries
+        </h2>
+        <div class="ui clearing divider"></div>
+        <div id="countryRecoveryPercent"></div>
+    </div>
     <div class="ui raised segment">
         <h2 class="label ui left floated header">
-                View Statistics By Country
+            View Statistics By Country
         </h2>
         <div class="ui clearing divider"></div>
         <div id="countryDropDown" class='ui sub header'></div>
@@ -108,6 +122,7 @@
         <div class="ui clearing divider"></div>
         <div id="fatalityRatePerCountry"></div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
     <script src="libraries/js/semantic.min.js"></script>
     <script src="libraries/js/d3.v5.min.js"></script>
     <script src="libraries/js/crossfilter.min.js"></script>
