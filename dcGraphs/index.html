@@ -8,126 +8,145 @@
     <link rel="stylesheet" href="libraries/css/semantic.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="libraries/js/jquery.min.js"></script>
+    <script src="libraries/js/semantic.min.js"></script>
     <script src="assets/js/graphStyles.js"></script>
     <title>COVID-19 DC.js Dashboard</title>
 </head>
 <body>
     <div class="loading-gif"></div>
-    <div class="ui raised very padded text container raised segment">
-        <h1 class="ui icon header">
-            <i class="fas fa-viruses icon"></i>
-            <div class="content">
-                COVID-19 Mini Dashboard
-            </div>
-        </h1>
-        <p>Some info about the COVID Graphs/Situation to go here.</p>
+    <div id='sidebar' class="ui left demo vertical inverted sidebar labeled icon menu">
+        <a class="item">
+            <i class="fas fa-home icon"></i>
+            Home
+        </a>
+        <a class="item">
+            <i class="fas fa-calendar-day icon"></i>
+            Live
+        </a>
+        <a class="item">
+            <i class="fas fa-code icon"></i>
+            Source
+        </a>
     </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Total Confirmed Cases
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="totalConfirmedCases"></div>
-    </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Percentage of Global Cases
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="countryCasePercent"></div>
-    </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Total Fatalities
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="totalDeaths"></div>
-    </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Percentage of Global Fatalities
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="countryDeathPercent"></div>
-    </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Total Recoveries
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="totalRecoveries"></div>
-    </div>
-    <div class="ui statistic raised segment">
-        <h2 class="label ui right floated header">
-            Percentage of Recoveries
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="countryRecoveryPercent"></div>
-    </div>
-    <div class="ui raised segment">
-        <h2 class="label ui left floated header">
-            View Statistics By Country
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="countryDropDown" class='ui sub header'></div>
-    </div>
-    <div class="ui raised segment">
-        <h2 class="label ui left floated header">
-            Cases per Country
-        </h2>
-        <div id="select-direction" class="ui form">
-            <div class="inline fields">
-                <div class="field">
-                    <div id="search"></div>
+    <div class="pusher">
+        <div class="ui raised very padded text container raised segment">
+            <h1 class="ui icon header">
+                <i class="fas fa-viruses icon"></i>
+                <div class="content">
+                    COVID-19 Mini Dashboard
                 </div>
-                <div class="field">
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="radio" value="descending" checked="checked">
-                        <label>descending</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="radio" value="ascending">
-                        <label>ascending</label>
-                    </div>
-                </div>
-            </div>
+            </h1>
+            <p>Some info about the COVID Graphs/Situation to go here.</p>
         </div>
-        <div class="ui clearing divider"></div>
-        <table id="topCountries" class="ui celled striped teal table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Country</th>
-                    <th>Total Cases</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="ui raised segment">
-        <h2 class="label ui left floated header">
-            Total Cases Per Country From January to April
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="totalCasesPerCountry"></div>
-    </div>
-    <div class="ui raised segment">
-        <h2 class="label ui left floated header">
-            Daily Cases Per Country From January to April
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="dailyCasesPerCountry"></div>
-    </div>
-    <div class="ui raised segment">
-        <h2 class="label ui left floated header">
-            Fatalities Per Country From January to April
-        </h2>
-        <div class="ui clearing divider"></div>
-        <div id="fatalityRatePerCountry"></div>
+        <button class="ui button" id='toggleMenu'>
+            <i class='fas fa-cogs icon'></i>
+        </button>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Total Confirmed Cases
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="totalConfirmedCases"></div>
+        </div>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Percentage of Global Cases
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="countryCasePercent"></div>
+        </div>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Total Fatalities
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="totalDeaths"></div>
+        </div>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Percentage of Global Fatalities
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="countryDeathPercent"></div>
+        </div>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Total Recoveries
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="totalRecoveries"></div>
+        </div>
+        <div class="ui statistic raised segment">
+            <h2 class="label ui right floated header">
+                Percentage of Recoveries
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="countryRecoveryPercent"></div>
+        </div>
+        <div class="ui raised segment">
+            <h2 class="label ui left floated header">
+                View Statistics By Country
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="countryDropDown" class='ui sub header'></div>
+        </div>
+        <div class="ui raised segment">
+            <h2 class="label ui left floated header">
+                Cases per Country
+            </h2>
+            <div id="select-direction" class="ui form">
+                <div class="inline fields">
+                    <div class="field">
+                        <div id="search"></div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="radio" value="descending" checked="checked">
+                            <label>descending</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="radio" value="ascending">
+                            <label>ascending</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui clearing divider"></div>
+            <table id="topCountries" class="ui celled striped teal table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Country</th>
+                        <th>Total Cases</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="ui raised segment">
+            <h2 class="label ui left floated header">
+                Total Cases Per Country From January to April
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="totalCasesPerCountry"></div>
+        </div>
+        <div class="ui raised segment">
+            <h2 class="label ui left floated header">
+                Daily Cases Per Country From January to April
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="dailyCasesPerCountry"></div>
+        </div>
+        <div class="ui raised segment">
+            <h2 class="label ui left floated header">
+                Fatalities Per Country From January to April
+            </h2>
+            <div class="ui clearing divider"></div>
+            <div id="fatalityRatePerCountry"></div>
+        </div>
     </div>
     <script src="libraries/font_awesome/all.min.js"></script>
-    <script src="libraries/js/semantic.min.js"></script>
     <script src="libraries/js/d3.v5.min.js"></script>
     <script src="libraries/js/crossfilter.min.js"></script>
     <script src="libraries/js/dc.min.js"></script>
