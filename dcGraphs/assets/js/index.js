@@ -30,6 +30,7 @@ Promise.all([
     aggregatePercentage(allCovidndx, percentageOfDeaths, 'Total Deaths', TOTALDEATHS);
     aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries', TOTALRECOVER);
     countryDropDown(allCovidndx, '#countryDropDown');
+    searchByCountry(allCovidndx, '#search');
     highestCasesPerCountry(allCovidndx, '#topCountries');
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
@@ -117,6 +118,13 @@ var countryDropDown = (ndx, chartID) => {
     });
 }
 
+var searchByCountry = (ndx, chartID) => {
+    var countryDim = ndx.dimension(d => d.location);
+    var searchCountry = dc.textFilterWidget(chartID)
+    searchCountry
+        .dimension(countryDim);
+}
+
 
 // Table Showing the Countries with the highest case count
 var highestCasesPerCountry = (ndx, chartID) => {
@@ -142,19 +150,24 @@ var highestCasesPerCountry = (ndx, chartID) => {
             return {cases: 0};
         },
     )
-    var countryTable = dc.dataTable(chartID)
+    
+    var i = 0;
+    var countryTable = dc.dataTable(chartID);
     countryTable
     .width(768)
     .height(480)
     .dimension(reversible_group(countryGroup))
-    .columns([d => d.key,
+    .columns([d => {i = i + 1; return i;},
+                d => d.key,
               d => d.value.cases])
     .sortBy(d => d.value.cases)
+    .showSections(false)
     .order(d3.descending)
     .size(Infinity)
     .endSlice(15)
-    .showSections(true)
-    countryTable.render();
+    .on('renderlet', function(c) {
+        i = 0;
+    });
 
     d3.selectAll('#select-direction input')
       .on('click', function() {
@@ -163,24 +176,35 @@ var highestCasesPerCountry = (ndx, chartID) => {
       });
 }
 
-// Fake Dimension to Wrap the Group to sort - Taken From: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/table-on-aggregated-data.html
-  function reversible_group(group) {
-      return {
-          top: function(N) {
-              return group.top(N);
-          },
+
+// Fake Dimension to Wrap the Group to toggle sorting and hide rows with zero cases
+//  Modified From: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/table-on-aggregated-data.html
+  function reversible_group(source_group) {
+    function non_zero_pred(d) {
+        return d.value.cases != 0;
+    }
+    return {
+        all: function () {
+            return source_group.all().filter(non_zero_pred);
+        },
+        top: function(N) {
+            return source_group.top(N)
+                .filter(non_zero_pred)
+        },
           bottom: function(N) {
-              return group.top(Infinity).slice(-N).reverse();
-          }
-      };
-  }
+            return source_group.top(Infinity)
+                .filter(non_zero_pred)
+                .slice(-N).reverse();
+        }
+    };
+}
 
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID, casesCountType) => {
     var dateDim = ndx.dimension(d => d.Date);
-    var countryDim = ndx.dimension(d => [d.location, d.Date]);
-    var countryGroup = countryDim.group().reduce(
+    var countriesDim = ndx.dimension(d => [d.location, d.Date]);
+    var countryGroup = countriesDim.group().reduce(
         (p, v) => {
             p.cases += parseInt(v[casesCountType])
             return p;
@@ -207,7 +231,7 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     .xAxisLabel("Date")
     .clipPadding(10)
     .elasticY(true)
-    .dimension(countryDim)
+    .dimension(countriesDim)
     .group(filteredCountryGroup)
     .seriesAccessor(d =>  "Country: " + d.key[0])
     .keyAccessor(d =>  d.key[1])

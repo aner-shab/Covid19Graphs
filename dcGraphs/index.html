@@ -78,6 +78,9 @@
         <div id="select-direction" class="ui form">
             <div class="inline fields">
                 <div class="field">
+                    <div id="search"></div>
+                </div>
+                <div class="field">
                     <div class="ui radio checkbox">
                         <input type="radio" name="radio" value="descending" checked="checked">
                         <label>descending</label>
@@ -95,6 +98,7 @@
         <table id="topCountries" class="ui celled striped teal table">
             <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Country</th>
                     <th>Total Cases</th>
                 </tr>
@@ -122,7 +126,7 @@
         <div class="ui clearing divider"></div>
         <div id="fatalityRatePerCountry"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <script src="libraries/font_awesome/all.min.js"></script>
     <script src="libraries/js/semantic.min.js"></script>
     <script src="libraries/js/d3.v5.min.js"></script>
     <script src="libraries/js/crossfilter.min.js"></script>
