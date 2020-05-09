@@ -13,11 +13,6 @@ body {
     background-color: #fafafa;
 }
 
-/* Header Grid */
-.column {
-    display: flex;
-}
-
 /* Table */
 
 td.dc-table-label {

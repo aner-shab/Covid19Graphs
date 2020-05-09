@@ -29,11 +29,11 @@
         </a>
     </div>
     <div class="pusher">
-        <div class="ui stackable doubling two column centered grid">
-            <div class="column">
+        <div class="ui stackable doubling two column centered padded grid">
+            <div class="stretched column">
                 <div class="ui fluid centered card raised very padded text raised segment">
-                    <div class="center aligned">
-                        <i class="ui massive icon">
+                    <div class="center aligned middle aligned content">
+                        <i class="ui massive circular teal icon">
                             <i class="fas fa-viruses"></i>
                         </i>
                     </div>
@@ -41,72 +41,74 @@
                         <h1>COVID-19 Mini Dashboard</h1>
                         <p>Some info about the COVID Graphs/Situation to go here.</p>
                     </div>
-                    <div class="extra content center aligned">
-                        <button class="ui button" id='toggleMenu'>
-                            <i class='fas fa-cogs icon'></i>
+                    <div class="extra content center aligned middle aligned">
+                        <button class="ui huge basic teal button" id='toggleMenu'>
+                            <i class='ui icon'>
+                                <i class='fas fa-cogs'></i>
+                            </i>
                             Settings
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="column">
+            <div class="stretched column">
                 <div class="ui stackable two column centered grid cards">
-                    <div class="eight wide centered center aligned column">
-                        <div class="ui centered card statistic padded text raised segment">
-                            <h2 class="label ui center aligned header">
+                    <div class="eight wide centered center aligned column stretched">
+                        <div class="ui fluid centered card statistic padded text raised segment">
+                            <h2 class="ui label center aligned">
                                 Total Confirmed Cases
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="totalConfirmedCases"></div>
+                            <div class='center aligned value' id="totalConfirmedCases"></div>
                         </div>
                     </div>
-                    <div class="eight wide centered center aligned column">
-                        <div class="ui card statistic padded text raised segment">
+                    <div class="eight wide centered center aligned column stretched">
+                        <div class="ui fluid card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
                                 Percentage of Global Cases
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="countryCasePercent"></div>
+                            <div class='center aligned value' id="countryCasePercent"></div>
                         </div>
                     </div>
                 </div>
                 <div class="ui stackable two column centered grid">
-                    <div class="eight wide centered center aligned column">
-                        <div class="ui card statistic padded text raised segment">
+                    <div class="eight wide centered center aligned column stretched">
+                        <div class="ui fluid card statistic padded text raised segment">
                             <h2 class="label ui center aligned headerr">
                                 Total Fatalities
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="totalDeaths"></div>
+                            <div class='center aligned value' id="totalDeaths"></div>
                         </div>
                     </div>
-                    <div class="eight wide center aligned column">
-                        <div class="ui center aligned card statistic padded text raised segment">
+                    <div class="eight wide center aligned column stretched">
+                        <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
                                 Percentage of Global Fatalities
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="countryDeathPercent"></div>
+                            <div class='center aligned value' id="countryDeathPercent"></div>
                         </div>
                     </div>
                 </div>
                 <div class="ui stackable two column centered grid">
-                    <div class="eight wide center aligned column">
-                        <div class="ui center aligned card statistic padded text raised segment">
+                    <div class="eight wide center aligned column stretched">
+                        <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
                                 Total Recoveries
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="totalRecoveries"></div>
+                            <div class='center aligned value' id="totalRecoveries"></div>
                         </div>
                     </div>
-                    <div class="eight wide center aligned column">
-                        <div class="ui center aligned card statistic padded text raised segment">
+                    <div class="eight wide center aligned column stretched">
+                        <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
                                 Percentage of Recoveries
                             </h2>
                             <div class="ui clearing divider"></div>
-                            <div class='center aligned' id="countryRecoveryPercent"></div>
+                            <div class='center aligned value' id="countryRecoveryPercent"></div>
                         </div>
                     </div>
                 </div>

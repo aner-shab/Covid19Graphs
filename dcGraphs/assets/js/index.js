@@ -32,9 +32,9 @@ Promise.all([
     countryDropDown(allCovidndx, '#countryDropDown');
     searchByCountry(allCovidndx, '#search');
     highestCasesPerCountry(allCovidndx, '#topCountries');
-    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
-    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
+    // casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
+    // casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
+    // casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
     
     dc.renderAll();
 });
