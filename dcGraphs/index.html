@@ -105,7 +105,7 @@
                     <div class="eight wide center aligned column stretched">
                         <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
-                                Percentage of Recoveries
+                                Percentage of Global Recoveries
                             </h2>
                             <div class="ui clearing divider"></div>
                             <div class='center aligned value' id="countryRecoveryPercent"></div>
@@ -114,49 +114,99 @@
                 </div>
             </div>
         </div>
-        <div class="ui raised padded text raised segment">
-            <h2 class="label ui left floated header">
-                View Statistics By Country
-            </h2>
-            <div class="ui clearing divider"></div>
-            <div id="countryDropDown" class='ui sub header'></div>
-        </div>
-        <div class="ui raised padded text raised segment">
-            <h2 class="label ui left floated header">
-                Cases per Country
-            </h2>
-            <div id="select-direction" class="ui form">
-                <div class="inline fields">
+        <div class="ui stackable doubling two column centered padded grid">
+            <div class="stretched column">
+                <div class="ui fluid center aligned card padded text raised segment">
+                    <h2 class="label ui left floated header">
+                        View Statistics By Country
+                    </h2>
+                    <div class="ui clearing divider"></div>
+                    <div id="countryDropDown" class='ui sub header center aligned'></div>
+                </div>
+            </div>
+            <div class="stretched column">
+                <div class="ui fluid center aligned card padded text raised segment">
+                    <h2 class="label ui left floated header">
+                            Search By Country
+                    </h2>
+                    <div class="ui clearing divider"></div>
                     <div class="ui search">
                         <div id='search' class="ui icon input">
                             <input type="text" class="prompt" placeholder="Search countries...">
                             <i class="fas fa-search icon"></i>
                         </div>
                     </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="radio" value="descending" checked="checked">
-                            <label>descending</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="radio" value="ascending">
-                            <label>ascending</label>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="ui clearing divider"></div>
-            <table id="topCountries" class="ui celled striped teal table">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Country</th>
-                        <th>Total Cases</th>
-                    </tr>
-                </thead>
-            </table>
+        </div>
+        <div class="ui stackable doubling two column centered padded grid">
+            <div class="stretched column">
+                <div class="ui fluid center aligned card padded text raised segment">
+                    <h2 class="label ui left floated header">
+                        Cases per Country
+                    </h2>
+                    <div id="select-direction" class="ui form">
+                        <div class="inline fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="radio" value="descending" checked="checked">
+                                    <label>descending</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="radio" value="ascending">
+                                    <label>ascending</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui clearing divider"></div>
+                    <table id="topCountries" class="ui celled striped teal table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Country</th>
+                                <th>Total Cases</th>
+                                <th>Total Deaths</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="stretched column">
+                <div class="ui fluid center aligned card padded text raised segment">
+                    <h2 class="label ui left floated header">
+                        Deaths per Country
+                    </h2>
+                    <div id="select-direction" class="ui form">
+                        <div class="inline fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="radio" value="descending" checked="checked">
+                                    <label>descending</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="radio" value="ascending">
+                                    <label>ascending</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui clearing divider"></div>
+                    <table id="topCountries" class="ui celled striped teal table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Country</th>
+                                <th>Total Deaths</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="ui raised padded text raised segment">
             <h2 class="label ui left floated header">
