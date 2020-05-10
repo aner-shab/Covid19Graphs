@@ -41,7 +41,7 @@ Promise.all([
 
 var calculateRecoveries = (total_cases, total_deaths) => {
     return total_cases - total_deaths;
-}
+};
 
 // Total Cases recorded as of 5 April 2020 Number Display
 var aggregateNumber = (ndx, chartID, column) => {
@@ -71,7 +71,7 @@ var aggregateNumber = (ndx, chartID, column) => {
     .formatNumber(d3.format('d'))
     .valueAccessor(d => +d.cases)
     .group(totalCasesNumber)
-}
+};
 
 // Percent of Cases Number Display
 var aggregatePercentage = (ndx, chartID, column, TOTAL) => {
@@ -100,7 +100,7 @@ var aggregatePercentage = (ndx, chartID, column, TOTAL) => {
     .formatNumber(d3.format(".2%"))
     .valueAccessor(d => (d.cases / TOTAL))
     .group(totalCasesNumber);
-}
+};
 
 
 // View Individual Country Dropdown
@@ -116,14 +116,14 @@ var countryDropDown = (ndx, chartID) => {
     countrySelect.on('pretransition', function(countrySelect){
         countrySelect.select('select').classed('ui selection dropdown', true);
     });
-}
+};
 
 var searchByCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(d => d.location);
-    var searchCountry = dc.textFilterWidget(chartID)
+    var searchCountry = dc.textFilterWidget(chartID);
     searchCountry
         .dimension(countryDim);
-}
+};
 
 
 // Table Showing the Countries with the highest case count
@@ -173,14 +173,16 @@ var highestCasesPerCountry = (ndx, chartID) => {
     .endSlice(15)
     .on('renderlet', function(c) {
         i = 0;
+        tableStyling();
     });
 
     d3.selectAll('#select-direction button')
       .on('click', function() {
           // this.value is 'ascending' or 'descending'
           countryTable.order(d3[this.value]).redraw()
+          tableStyling();
       });
-}
+};
 
 
 // Fake Dimension to Wrap the Group to toggle sorting and hide rows with zero cases
@@ -203,7 +205,7 @@ var highestCasesPerCountry = (ndx, chartID) => {
                 .slice(-N).reverse();
         }
     };
-}
+};
 
 
 // Cases Per Country seriesChart
@@ -244,7 +246,7 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     .valueAccessor(d => d.value.cases)
     .title(d => `${d.key[0]}: ${d.value.cases} cases on ${(d.key[1]).toLocaleDateString()}`)
     chartID.margins().left += 40;
-}
+};
 
 // Remove Empty Groups - Taken from: 
 // https://github.com/dc-js/dc.js/wiki/FAQ#how-do-i-filter-the-data-before-its-charted
@@ -256,5 +258,5 @@ function remove_empty_bins(source_group) {
             });
         }
     };
-}
+};
 
