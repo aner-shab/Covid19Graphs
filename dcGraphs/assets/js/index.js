@@ -32,9 +32,9 @@ Promise.all([
     countryDropDown(allCovidndx, '#countryDropDown');
     searchByCountry(allCovidndx, '#search');
     highestCasesPerCountry(allCovidndx, '#topCountries');
-    // casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
-    // casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    // casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
+    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
+    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
     
     dc.renderAll();
 });
@@ -131,23 +131,27 @@ var highestCasesPerCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(d => d.location);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
-            (
-                v.date === '2020-04-26'
-            )
-                ? p.cases += parseInt(v['Total Cases'])
-                : p
+            if (v.date === '2020-04-26') {
+                p.cases += parseInt(v['Total Cases']);
+                p.deaths += parseInt(v['Total Deaths']);
+                p.recoveries += parseInt(v['recoveries']);
+            } else {
+                p
+            }
             return p
         },
         (p, v) => {
-            (
-                v.date === "2020-04-26"
-            )
-            ? p.cases -= parseInt(v['Total Cases'])
-            : p
-            return p;
+            if (v.date === '2020-04-26') {
+                p.cases -= parseInt(v['Total Cases']);
+                p.deaths -= parseInt(v['Total Deaths']);
+                p.recoveries -= parseInt(v['recoveries'])
+            } else {
+                p
+            }
+            return p
         },
         () => {
-            return {cases: 0};
+            return {cases: 0, deaths: 0, recoveries: 0};
         },
     )
     
@@ -158,8 +162,10 @@ var highestCasesPerCountry = (ndx, chartID) => {
     .height(480)
     .dimension(reversible_group(countryGroup))
     .columns([d => {i = i + 1; return i;},
-                d => d.key,
-              d => d.value.cases])
+              d => d.key,
+              d => d.value.cases,
+              d => d.value.deaths,
+              d => d.value.recoveries])
     .sortBy(d => d.value.cases)
     .showSections(false)
     .order(d3.descending)
@@ -169,7 +175,7 @@ var highestCasesPerCountry = (ndx, chartID) => {
         i = 0;
     });
 
-    d3.selectAll('#select-direction input')
+    d3.selectAll('#select-direction button')
       .on('click', function() {
           // this.value is 'ascending' or 'descending'
           countryTable.order(d3[this.value]).redraw()
