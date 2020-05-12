@@ -4,16 +4,17 @@ $(window).on('load', function() {
 })
 
 $(document).ready(function() {
-  // Sidebar Toggle
+	// Sidebar Toggle
     $('#toggleMenu').click(function() {
         $('#sidebar').sidebar('toggle');
-    });
+	});
+
+	// Data Table Tabs
+	$('.menu .item').tab();
 
 });
 
-  // Table Responsiveness
-var tableStyling = () => {
-    $("td.dc-table-column._2").addClass('right aligned');
-    $("td.dc-table-column._3").addClass('right aligned');
-    $("td.dc-table-column._4").addClass('right aligned');
+// DC Chart Helper Functions
+var calculateRecoveries = (total_cases, total_deaths) => {
+    return total_cases - total_deaths;
 };

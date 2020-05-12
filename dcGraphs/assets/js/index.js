@@ -8,6 +8,8 @@ var totalRecoveries = dc.numberDisplay('#totalRecoveries');
 var percentageOfCases = dc.numberDisplay('#countryCasePercent');
 var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
 var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
+var totalStatsTable = dc.dataTable('#topCountries');
+var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
@@ -21,6 +23,9 @@ Promise.all([
     for (let d of allCovid) {
         d.Date = formatTime(d.date);
         d.recoveries = calculateRecoveries(d['Total Cases'], d['Total Deaths']);
+        d.total_cases_per_million = removeNaN(d['total_cases_per_million']);
+        d.total_deaths_per_million = removeNaN(d['total_deaths_per_million']);
+        d.recoveries_per_million = calculateRecoveries(d['total_cases_per_million'], d['total_deaths_per_million']);
     }
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
@@ -31,16 +36,30 @@ Promise.all([
     aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries', TOTALRECOVER);
     countryDropDown(allCovidndx, '#countryDropDown');
     searchByCountry(allCovidndx, '#search');
-    highestCasesPerCountry(allCovidndx, '#topCountries');
+    highestCasesPerCountry(allCovidndx, totalStatsTable, 'Total Cases', 'Total Deaths', 'recoveries', 'select-direction-cases');
+    highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill')
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'Total Deaths');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
     
     dc.renderAll();
 });
 
-var calculateRecoveries = (total_cases, total_deaths) => {
-    return total_cases - total_deaths;
+
+var removeNaN = (value) => {
+    if (!isNaN(value)) {
+        return value;
+    } else {
+        return 0;
+    }
+};
+
+
+// Table Responsiveness
+var tableStyling = () => {
+    $("td.dc-table-column._2").addClass('right aligned');
+    $("td.dc-table-column._3").addClass('right aligned');
+    $("td.dc-table-column._4").addClass('right aligned');
 };
 
 // Total Cases recorded as of 5 April 2020 Number Display
@@ -127,14 +146,14 @@ var searchByCountry = (ndx, chartID) => {
 
 
 // Table Showing the Countries with the highest case count
-var highestCasesPerCountry = (ndx, chartID) => {
+var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) => {
     var countryDim = ndx.dimension(d => d.location);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
             if (v.date === '2020-04-26') {
-                p.cases += parseInt(v['Total Cases']);
-                p.deaths += parseInt(v['Total Deaths']);
-                p.recoveries += parseInt(v['recoveries']);
+                p.cases += parseInt(v[cases]);
+                p.deaths += parseInt(v[deaths]);
+                p.recoveries += parseInt(v[recoveries]);
             } else {
                 p
             }
@@ -142,9 +161,9 @@ var highestCasesPerCountry = (ndx, chartID) => {
         },
         (p, v) => {
             if (v.date === '2020-04-26') {
-                p.cases -= parseInt(v['Total Cases']);
-                p.deaths -= parseInt(v['Total Deaths']);
-                p.recoveries -= parseInt(v['recoveries'])
+                p.cases -= parseInt(v[cases]);
+                p.deaths -= parseInt(v[deaths]);
+                p.recoveries -= parseInt(v[recoveries])
             } else {
                 p
             }
@@ -156,8 +175,7 @@ var highestCasesPerCountry = (ndx, chartID) => {
     )
     
     var i = 0;
-    var countryTable = dc.dataTable(chartID);
-    countryTable
+    chartID
     .width(768)
     .height(480)
     .dimension(reversible_group(countryGroup))
@@ -176,10 +194,10 @@ var highestCasesPerCountry = (ndx, chartID) => {
         tableStyling();
     });
 
-    d3.selectAll('#select-direction button')
+    d3.selectAll(`#${button} button`)
       .on('click', function() {
           // this.value is 'ascending' or 'descending'
-          countryTable.order(d3[this.value]).redraw()
+          chartID.order(d3[this.value]).redraw()
           tableStyling();
       });
 };
