@@ -10,6 +10,7 @@ var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
 var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
 var totalStatsTable = dc.dataTable('#topCountries');
 var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
+var testingTotalAvailability = dc.rowChart('#testingAvailability');
 var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
@@ -26,6 +27,7 @@ Promise.all([
         d.total_cases_per_million = removeNaN(d['total_cases_per_million']);
         d.total_deaths_per_million = removeNaN(d['total_deaths_per_million']);
         d.recoveries_per_million = calculateRecoveries(d['total_cases_per_million'], d['total_deaths_per_million']);
+        d.total_tests = removeNaN(d['total_tests']);
     }
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
@@ -37,7 +39,8 @@ Promise.all([
     countryDropDown(allCovidndx, '#countryDropDown');
     searchByCountry(allCovidndx, '#search');
     highestCasesPerCountry(allCovidndx, totalStatsTable, 'Total Cases', 'Total Deaths', 'recoveries', 'select-direction-cases');
-    highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill')
+    highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
+    testingAvailability(allCovidndx, testingTotalAvailability);
     casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
@@ -47,7 +50,7 @@ Promise.all([
 
 
 var removeNaN = (value) => {
-    if (!isNaN(value)) {
+    if (value != "") {
         return value;
     } else {
         return 0;
@@ -176,8 +179,8 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
     
     var i = 0;
     chartID
-    .width(768)
-    .height(480)
+    .width(600)
+    .height(400)
     .dimension(reversible_group(countryGroup))
     .columns([d => {i = i + 1; return i;},
               d => d.key,
@@ -224,6 +227,47 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
         }
     };
 };
+
+// Testing Availability Row chart
+var testingAvailability = (ndx, chartID) => {
+    var testingDim = ndx.dimension(d => d.location);
+    var testingGroup = testingDim.group().reduce(
+        (p, v) => {
+            if (v.date === '2020-04-26') {
+                p.tests += parseInt(v['total_tests']);
+            } else {
+                p;
+            }
+            return p;
+        },
+        (p, v) => {
+            if (v.date === '2020-04-26') {
+                p.tests -= parseInt(v['total_tests']);
+            } else {
+                p;
+            }
+            return p;
+        },
+        () => {
+            return {tests: 0};
+        },
+    )
+    
+    chartID
+    .width(700)
+    .height(600)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .transitionDuration(500)
+    .dimension(testingDim)
+    .group(remove_empty_bins(testingGroup))
+    .valueAccessor(d => d.value.tests)
+    .elasticX(true)
+    .x(d3.scaleBand())
+    .ordering(d => -d.value.tests)
+    .othersGrouper(false)
+    .rowsCap(15)
+    .xAxis().ticks(8)
+}
 
 
 // Cases Per Country seriesChart
@@ -277,4 +321,3 @@ function remove_empty_bins(source_group) {
         }
     };
 };
-
