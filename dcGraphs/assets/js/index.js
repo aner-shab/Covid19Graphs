@@ -12,7 +12,6 @@ var totalStatsTable = dc.dataTable('#topCountries');
 var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
 var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
 var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
-var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 
@@ -44,7 +43,6 @@ Promise.all([
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
     testingAvailability(allCovidndx, testingTotalAvailability, 'total_tests', 'testingAvailability');
     testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
-    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
     
@@ -144,6 +142,7 @@ var countryDropDown = (ndx, chartID) => {
     });
 };
 
+// Text search for country data
 var searchByCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(d => d.location);
     var searchCountry = dc.textFilterWidget(chartID);
@@ -276,6 +275,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
     })
 }
 
+// Modified from basic SVG gradient using CSS: https://stackoverflow.com/questions/14051351/svg-gradient-using-css
 function renderGradients(svg, id) {
     let gradient = `<svg width="0" height="0" version="1.1">
                         <linearGradient id="${id}">
