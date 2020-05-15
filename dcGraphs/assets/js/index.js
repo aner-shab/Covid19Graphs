@@ -11,9 +11,9 @@ var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
 var totalStatsTable = dc.dataTable('#topCountries');
 var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
 var testingTotalAvailability = dc.rowChart('#testingAvailability');
-var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
-var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
-var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
+// var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
+// var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
+// var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 
 
 // Load Data
@@ -41,11 +41,12 @@ Promise.all([
     highestCasesPerCountry(allCovidndx, totalStatsTable, 'Total Cases', 'Total Deaths', 'recoveries', 'select-direction-cases');
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
     testingAvailability(allCovidndx, testingTotalAvailability);
-    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
-    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
+    // casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
+    // casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
+    // casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
     
     dc.renderAll();
+
 });
 
 
@@ -266,9 +267,24 @@ var testingAvailability = (ndx, chartID) => {
     .ordering(d => -d.value.tests)
     .othersGrouper(false)
     .rowsCap(15)
-    .xAxis().ticks(8)
+    .xAxis().ticks(8);
+    chartID.on('postRender', function(){
+        renderGradients($('#testingAvailability svg'))
+    })
 }
 
+function renderGradients(svg) {
+    let gradient = `<svg width="0" height="0" version="1.1">
+                        <linearGradient id="gradient">
+                            <stop class="one-stop" offset="0%"/>
+                            <stop class="two-stop" offset="25%"/>
+                            <stop class="three-stop" offset="75%"/>
+                            <stop class="four-stop" offset="100%"/>
+                        </linearGradient>
+                        <rect width="0" height="0" fill="url(#gradient)"/>
+                    </svg>`;
+    svg.prepend(gradient);
+}
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID, casesCountType) => {

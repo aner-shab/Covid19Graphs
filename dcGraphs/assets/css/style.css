@@ -31,15 +31,15 @@ rect {
 }
 
 /* Row Chart Bar Gradient */
-.main-stop {
+.one-stop {
     stop-color:#00b5ad
 }
-.mid-stop {
-    stop-color: #4ab0c2;
+.two-stop {
+    stop-color: #5fb0ae;
 }
-.pre-stop {
-    stop-color: #7caac4;
+.three-stop {
+    stop-color: #75aead;
 }
-.alt-stop {
-    stop-color:#9ca6b7;
+.four-stop {
+    stop-color:#88abab;
 }
