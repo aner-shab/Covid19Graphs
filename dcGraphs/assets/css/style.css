@@ -20,8 +20,15 @@ td.dc-table-label {
 }
 
 /* Testing Row Chart */
+#testingAvailability1-row rect {
+    fill: url(#testingAvailability1);
+}
+
+#testingThousandAvailability1-row rect {
+    fill: url(#testingThousandAvailability1);
+}
+
 rect {
-    fill: url(#gradient);
     rx: 3;
     shape-rendering: crispEdges;
 }

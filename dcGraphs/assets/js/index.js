@@ -10,10 +10,11 @@ var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
 var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
 var totalStatsTable = dc.dataTable('#topCountries');
 var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
-var testingTotalAvailability = dc.rowChart('#testingAvailability');
-// var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
-// var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
-// var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
+var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
+var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
+var totalCasesPerCountry = dc.seriesChart('#totalCasesPerCountry');
+var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
+var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 
 
 // Load Data
@@ -28,6 +29,7 @@ Promise.all([
         d.total_deaths_per_million = removeNaN(d['total_deaths_per_million']);
         d.recoveries_per_million = calculateRecoveries(d['total_cases_per_million'], d['total_deaths_per_million']);
         d.total_tests = removeNaN(d['total_tests']);
+        d.total_tests_per_thousand = removeNaN(d['total_tests_per_thousand'])
     }
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
@@ -40,10 +42,11 @@ Promise.all([
     searchByCountry(allCovidndx, '#search');
     highestCasesPerCountry(allCovidndx, totalStatsTable, 'Total Cases', 'Total Deaths', 'recoveries', 'select-direction-cases');
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
-    testingAvailability(allCovidndx, testingTotalAvailability);
-    // casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
-    // casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    // casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
+    testingAvailability(allCovidndx, testingTotalAvailability, 'total_tests', 'testingAvailability');
+    testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
+    casesPerCountry(allCovidndx, totalCasesPerCountry, 'Total Cases');
+    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
     
     dc.renderAll();
 
@@ -154,7 +157,7 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
     var countryDim = ndx.dimension(d => d.location);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
-            if (v.date === '2020-04-26') {
+            if (v.date === '2020-04-25') {
                 p.cases += parseInt(v[cases]);
                 p.deaths += parseInt(v[deaths]);
                 p.recoveries += parseInt(v[recoveries]);
@@ -164,7 +167,7 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
             return p
         },
         (p, v) => {
-            if (v.date === '2020-04-26') {
+            if (v.date === '2020-04-25') {
                 p.cases -= parseInt(v[cases]);
                 p.deaths -= parseInt(v[deaths]);
                 p.recoveries -= parseInt(v[recoveries])
@@ -230,20 +233,20 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
 };
 
 // Testing Availability Row chart
-var testingAvailability = (ndx, chartID) => {
+var testingAvailability = (ndx, chartID, column, id) => {
     var testingDim = ndx.dimension(d => d.location);
     var testingGroup = testingDim.group().reduce(
         (p, v) => {
-            if (v.date === '2020-04-26') {
-                p.tests += parseInt(v['total_tests']);
+            if (v.date === '2020-04-25') {
+                p.tests += parseInt(v[column]);
             } else {
                 p;
             }
             return p;
         },
         (p, v) => {
-            if (v.date === '2020-04-26') {
-                p.tests -= parseInt(v['total_tests']);
+            if (v.date === '2020-04-25') {
+                p.tests -= parseInt(v[column]);
             } else {
                 p;
             }
@@ -261,7 +264,7 @@ var testingAvailability = (ndx, chartID) => {
     .transitionDuration(500)
     .dimension(testingDim)
     .group(remove_empty_bins(testingGroup))
-    .valueAccessor(d => d.value.tests)
+    .valueAccessor(function(d) {console.log(d); return d.value.tests})
     .elasticX(true)
     .x(d3.scaleBand())
     .ordering(d => -d.value.tests)
@@ -269,19 +272,19 @@ var testingAvailability = (ndx, chartID) => {
     .rowsCap(15)
     .xAxis().ticks(8);
     chartID.on('postRender', function(){
-        renderGradients($('#testingAvailability svg'))
+        renderGradients($(`#${id}1-row svg`), `${id}1`)
     })
 }
 
-function renderGradients(svg) {
+function renderGradients(svg, id) {
     let gradient = `<svg width="0" height="0" version="1.1">
-                        <linearGradient id="gradient">
+                        <linearGradient id="${id}">
                             <stop class="one-stop" offset="0%"/>
                             <stop class="two-stop" offset="25%"/>
                             <stop class="three-stop" offset="75%"/>
                             <stop class="four-stop" offset="100%"/>
                         </linearGradient>
-                        <rect width="0" height="0" fill="url(#gradient)"/>
+                        <rect width="0" height="0" fill="url(#${id})"/>
                     </svg>`;
     svg.prepend(gradient);
 }

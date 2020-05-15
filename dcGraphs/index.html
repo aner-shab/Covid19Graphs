@@ -142,46 +142,46 @@
         <div class="ui stackable doubling two column centered padded grid">
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
-                        <div class="ui top attached tabular menu">
-                                <a class="item active" data-tab="total">Total</a>
-                                <a class="item" data-tab="per_million">Per Million</a>
-                              </div>
-                              <div class="ui bottom attached tab segment active" data-tab="total">
-                    <h2 class="label ui left floated header">
-                        Cases per Country
-                    </h2>
-                    <div class="ui clearing divider"></div>
-                    <table id="topCountries" class="ui tablet stackable celled striped teal compact table">
-                        <thead class="full-width">
-                            <tr>
-                                <th></th>
-                                <th colspan="4">
-                                    <div id="select-direction-cases" class="ui form">
-                                        <div class="ui buttons">
-                                            <button class="ui button" value="descending">
-                                                Descending
-                                            </button>
-                                            <div class="or"></div>
-                                            <button class="ui button" value="ascending">
-                                                Ascending
-                                            </button>
+                    <div class="ui top attached tabular menu">
+                        <a class="item active" data-tab="total">Total</a>
+                        <a class="item" data-tab="per_million">Per Million</a>
+                    </div>
+                    <div class="ui bottom attached tab segment active" data-tab="total">
+                        <h2 class="label ui left floated header">
+                            Cases per Country
+                        </h2>
+                        <div class="ui clearing divider"></div>
+                        <table id="topCountries" class="ui tablet stackable celled striped teal compact table">
+                            <thead class="full-width">
+                                <tr>
+                                    <th></th>
+                                    <th colspan="4">
+                                        <div id="select-direction-cases" class="ui form">
+                                            <div class="ui buttons">
+                                                <button class="ui button" value="descending">
+                                                    Descending
+                                                </button>
+                                                <div class="or"></div>
+                                                <button class="ui button" value="ascending">
+                                                    Ascending
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Country</th>
-                                <th class="right aligned">Cases</th>
-                                <th class="right aligned">Deaths</th>
-                                <th class="right aligned">Recoveries</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="ui bottom attached tab segment" data-tab="per_million">
-                    <h2 class="label ui left floated header">
-                            Cases per Million
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Country</th>
+                                    <th class="right aligned">Cases</th>
+                                    <th class="right aligned">Deaths</th>
+                                    <th class="right aligned">Recoveries</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="ui bottom attached tab segment" data-tab="per_million">
+                        <h2 class="label ui left floated header">
+                                Cases per Million
                         </h2>
                         <div class="ui clearing divider"></div>
                         <table id="topCountriesPerMillion" class="ui tablet stackable celled striped teal compact table">
@@ -211,16 +211,29 @@
                                 </tr>
                             </thead>
                         </table>
-                </div>
+                    </div>
                 </div>
             </div>
             <div class="stretched column">
-                <div class="ui raised padded text raised segment">
-                    <h2 class="label ui left floated header">
-                        Testing Availability Per Country
-                    </h2>
-                    <div class="ui clearing divider"></div>
-                    <div id="testingAvailability"></div>
+                <div class="ui fluid center aligned card padded text raised segment">
+                    <div class="ui top attached tabular menu">
+                        <a class="item active" data-tab="total-test">Total</a>
+                        <a class="item" data-tab="per_thousand">Per Thousand</a>
+                    </div>
+                    <div class="ui bottom attached tab segment active" data-tab="total-test">
+                        <h2 class="label ui left floated header">
+                            Testing Availability Per Country
+                        </h2>
+                        <div class="ui clearing divider"></div>
+                        <div id="testingAvailability1-row"></div>
+                    </div>
+                    <div class="ui bottom attached tab segment" data-tab="per_thousand">
+                        <h2 class="label ui left floated header">
+                            Testing Per Thousand
+                        </h2>
+                        <div class="ui clearing divider"></div>
+                        <div id="testingThousandAvailability1-row"></div>
+                    </div>
                 </div>
             </div>
         </div>
