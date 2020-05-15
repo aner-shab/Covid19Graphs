@@ -18,3 +18,28 @@ body {
 td.dc-table-label {
     display: none;
 }
+
+/* Testing Row Chart */
+rect {
+    fill: url(#gradient);
+    rx: 3;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart g.row text {
+    fill: rgb(27, 28, 29);
+}
+
+/* Row Chart Bar Gradient */
+.main-stop {
+    stop-color:#00b5ad
+}
+.mid-stop {
+    stop-color: #4ab0c2;
+}
+.pre-stop {
+    stop-color: #7caac4;
+}
+.alt-stop {
+    stop-color:#9ca6b7;
+}
