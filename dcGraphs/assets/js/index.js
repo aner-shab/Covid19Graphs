@@ -44,8 +44,8 @@ Promise.all([
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
     testingAvailability(allCovidndx, testingTotalAvailability, 'total_tests', 'testingAvailability');
     testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
-    casesPerCountry(allCovidndx, dailyCasesPerCountry, 'New Cases');
-    casesPerCountry(allCovidndx, totalDeathsPerCountry, 'New Deaths');
+    casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
     
     dc.renderAll();
 
@@ -293,7 +293,8 @@ function renderGradients(svg, id) {
 }
 
 // Cases Per Country seriesChart
-var casesPerCountry = (ndx, chartID, casesCountType) => {
+var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
+    var dailyCasesPerCountryOverview = dc.seriesChart(chart2ID);
     var dateDim = ndx.dimension(d => d.Date);
     var countriesDim = ndx.dimension(d => [d.location, d.Date]);
     var countryGroup = countriesDim.group().reduce(
@@ -312,25 +313,44 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     var filteredCountryGroup = remove_empty_bins(countryGroup);
     var minDate = formatTime("2020-01-25");
     var maxDate = dateDim.top(1)[0].Date;
-    chartID
+    chartID1
     .width(1200)
-    .height(600)
-    .chart(c => dc.lineChart(c).curve(d3.curveBasis))
+    .height(500)
+    .chart(c => dc.lineChart(c).curve(d3.curveBasis).evadeDomainFilter(true))
     .seriesSort(d3.descending)
     .x(d3.scaleTime().domain([minDate,maxDate]))
     .brushOn(false)
     .yAxisLabel(casesCountType)
     .xAxisLabel("Date")
+    .yAxisPadding("5%")
     .clipPadding(10)
     .elasticY(true)
     .dimension(countriesDim)
     .group(filteredCountryGroup)
-    .seriesAccessor(d =>  "Country: " + d.key[0])
+    .rangeChart(dailyCasesPerCountryOverview)
+    .seriesAccessor(d =>  `Country: ${d.key[0]}`)
     .keyAccessor(d =>  d.key[1])
     .valueAccessor(d => d.value.cases)
-    .title(d => `${d.key[0]}: ${formatNumber(d.value.cases)} cases on ${(d.key[1]).toLocaleDateString()}`)
-    chartID.margins().left += 40;
-};
+    .title(d => `${d.key[0]}: ${formatNumber(d.value.cases)} cases on ${(d.key[1]).toLocaleDateString()}`);
+    chartID1.margins().left += 40;
+
+    dailyCasesPerCountryOverview
+    .width(1200)
+    .height(100)
+    .chart(c => dc.lineChart(c).curve(d3.curveBasis))
+    .seriesSort(d3.descending)
+    .x(d3.scaleTime().domain([minDate,maxDate]))
+    .brushOn(true)
+    .clipPadding(10)
+    .dimension(countriesDim)
+    .group(filteredCountryGroup)
+    .seriesAccessor(d =>  `Country: ${d.key[0]}`)
+    .keyAccessor(d =>  d.key[1])
+    .valueAccessor(d => d.value.cases)
+    .yAxis().ticks(3)
+    dailyCasesPerCountryOverview.margins().left += 15;
+
+}
 
 // Remove Empty Groups - Taken from: 
 // https://github.com/dc-js/dc.js/wiki/FAQ#how-do-i-filter-the-data-before-its-charted
