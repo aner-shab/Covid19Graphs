@@ -2,6 +2,7 @@ const TOTALCASES = 2624252;
 const TOTALDEATHS = 178784;
 const TOTALRECOVER = 2445468;
 var formatTime = d3.timeParse("%Y-%m-%d");
+var formatNumber = d3.format(",");
 var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
 var totalDeathsRecorded = dc.numberDisplay('#totalDeaths');
 var totalRecoveries = dc.numberDisplay('#totalRecoveries');
@@ -92,7 +93,7 @@ var aggregateNumber = (ndx, chartID, column) => {
         },
     )
     chartID
-    .formatNumber(d3.format('d'))
+    .formatNumber(d3.format(','))
     .valueAccessor(d => +d.cases)
     .group(totalCasesNumber)
 };
@@ -187,9 +188,9 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
     .dimension(reversible_group(countryGroup))
     .columns([d => {i = i + 1; return i;},
               d => d.key,
-              d => d.value.cases,
-              d => d.value.deaths,
-              d => d.value.recoveries])
+              d => formatNumber(d.value.cases),
+              d => formatNumber(d.value.deaths),
+              d => formatNumber(d.value.recoveries)])
     .sortBy(d => d.value.cases)
     .showSections(false)
     .order(d3.descending)
@@ -257,22 +258,24 @@ var testingAvailability = (ndx, chartID, column, id) => {
     )
     
     chartID
-    .width(700)
-    .height(600)
+    .width(650)
+    .height(615)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .transitionDuration(500)
     .dimension(testingDim)
     .group(remove_empty_bins(testingGroup))
-    .valueAccessor(function(d) {console.log(d); return d.value.tests})
+    .valueAccessor(d => d.value.tests)
     .elasticX(true)
     .x(d3.scaleBand())
     .ordering(d => -d.value.tests)
     .othersGrouper(false)
+    .title(d => `${d.key}: ${formatNumber(d.value.tests)} tests`)
     .rowsCap(15)
     .xAxis().ticks(8);
+
     chartID.on('postRender', function(){
         renderGradients($(`#${id}1-row svg`), `${id}1`)
-    })
+    });
 }
 
 // Modified from basic SVG gradient using CSS: https://stackoverflow.com/questions/14051351/svg-gradient-using-css
@@ -325,7 +328,7 @@ var casesPerCountry = (ndx, chartID, casesCountType) => {
     .seriesAccessor(d =>  "Country: " + d.key[0])
     .keyAccessor(d =>  d.key[1])
     .valueAccessor(d => d.value.cases)
-    .title(d => `${d.key[0]}: ${d.value.cases} cases on ${(d.key[1]).toLocaleDateString()}`)
+    .title(d => `${d.key[0]}: ${formatNumber(d.value.cases)} cases on ${(d.key[1]).toLocaleDateString()}`)
     chartID.margins().left += 40;
 };
 
