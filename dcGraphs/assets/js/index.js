@@ -32,7 +32,7 @@ Promise.all([
         d.total_tests_per_thousand = removeNaN(d['total_tests_per_thousand'])
     }
     var allCovidndx = crossfilter(allCovid);
-    aggregateNumber(allCovidndx, totalCasesRecorded, 'Total Cases');
+    aggregateNumber(allCovidndx, totalCasesRecorded, 'New Cases');
     aggregateNumber(allCovidndx, totalDeathsRecorded, 'Total Deaths');
     aggregateNumber(allCovidndx, totalRecoveries, 'recoveries');
     aggregatePercentage(allCovidndx, percentageOfCases, 'Total Cases', TOTALCASES);
@@ -72,20 +72,11 @@ var tableStyling = () => {
 var aggregateNumber = (ndx, chartID, column) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
-            (
-                v.date === "2020-04-26"
-            )
-                ? p.cases += parseInt(v[column])
-                : p
+            p.cases += parseInt(v[column])
             return p
         },
         (p, v) => {
-            (
-                v.date === "2020-04-26"
-            )
-            ? p.cases -= parseInt(v[column])
-            : p
-
+            p.cases -= parseInt(v[column])
             return p;
         },
         () => {
@@ -316,7 +307,7 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     chartID1
     .width(1200)
     .height(500)
-    .chart(c => dc.lineChart(c).curve(d3.curveBasis).evadeDomainFilter(true))
+    .chart(c => dc.lineChart(c).curve(d3.curveBasis).evadeDomainFilter(true).filterHandler(filterHandler))
     .seriesSort(d3.descending)
     .x(d3.scaleTime().domain([minDate,maxDate]))
     .brushOn(false)
@@ -333,11 +324,12 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     .valueAccessor(d => d.value.cases)
     .title(d => `${d.key[0]}: ${formatNumber(d.value.cases)} cases on ${(d.key[1]).toLocaleDateString()}`);
     chartID1.margins().left += 40;
+    chartID1.filterHandler(filterHandler);
 
     dailyCasesPerCountryOverview
     .width(1200)
     .height(100)
-    .chart(c => dc.lineChart(c).curve(d3.curveBasis))
+    .chart(c => dc.lineChart(c).curve(d3.curveBasis).filterHandler(filterHandler))
     .seriesSort(d3.descending)
     .x(d3.scaleTime().domain([minDate,maxDate]))
     .brushOn(true)
@@ -349,6 +341,18 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     .valueAccessor(d => d.value.cases)
     .yAxis().ticks(3)
     dailyCasesPerCountryOverview.margins().left += 15;
+    dailyCasesPerCountryOverview.filterHandler(filterHandler);
+
+    function filterHandler(dimensions, filters) {
+        if (filters.length === 0) {
+          countriesDim.filter(null);
+        } else {
+          var filter = dc.filters.RangedFilter(filters[0][0], filters[0][1]);
+          countriesDim.filterFunction(k => filter.isFiltered(k[1]));
+          };
+        //   console.log('all',all.value());
+        return filters;
+      }
 
 }
 
