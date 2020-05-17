@@ -1,6 +1,3 @@
-const TOTALCASES = 2624252;
-const TOTALDEATHS = 178784;
-const TOTALRECOVER = 2445468;
 var formatTime = d3.timeParse("%Y-%m-%d");
 var formatNumber = d3.format(",");
 var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
@@ -24,23 +21,23 @@ Promise.all([
 .then(([allCovid]) =>  {
     for (let d of allCovid) {
         d.Date = formatTime(d.date);
-        d.recoveries = calculateRecoveries(d['Total Cases'], d['Total Deaths']);
-        d.total_cases_per_million = removeNaN(d['total_cases_per_million']);
-        d.total_deaths_per_million = removeNaN(d['total_deaths_per_million']);
-        d.recoveries_per_million = calculateRecoveries(d['total_cases_per_million'], d['total_deaths_per_million']);
-        d.total_tests = removeNaN(d['total_tests']);
-        d.total_tests_per_thousand = removeNaN(d['total_tests_per_thousand'])
+        d.recoveries = calculateRecoveries(d['New Cases'], d['New Deaths']);
+        d.total_cases_per_million = removeNaN(d['new_cases_per_million']);
+        d.total_deaths_per_million = removeNaN(d['new_deaths_per_million']);
+        d.recoveries_per_million = calculateRecoveries(d['new_cases_per_million'], d['new_deaths_per_million']);
+        d.total_tests = removeNaN(d['new_tests']);
+        d.total_tests_per_thousand = removeNaN(d['new_tests_per_thousand'])
     }
     var allCovidndx = crossfilter(allCovid);
     aggregateNumber(allCovidndx, totalCasesRecorded, 'New Cases');
-    aggregateNumber(allCovidndx, totalDeathsRecorded, 'Total Deaths');
+    aggregateNumber(allCovidndx, totalDeathsRecorded, 'New Deaths');
     aggregateNumber(allCovidndx, totalRecoveries, 'recoveries');
-    aggregatePercentage(allCovidndx, percentageOfCases, 'Total Cases', TOTALCASES);
-    aggregatePercentage(allCovidndx, percentageOfDeaths, 'Total Deaths', TOTALDEATHS);
-    aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries', TOTALRECOVER);
+    aggregatePercentage(allCovidndx, percentageOfCases, 'New Cases');
+    aggregatePercentage(allCovidndx, percentageOfDeaths, 'New Deaths');
+    aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries');
     countryDropDown(allCovidndx, '#countryDropDown');
     searchByCountry(allCovidndx, '#search');
-    highestCasesPerCountry(allCovidndx, totalStatsTable, 'Total Cases', 'Total Deaths', 'recoveries', 'select-direction-cases');
+    highestCasesPerCountry(allCovidndx, totalStatsTable, 'New Cases', 'New Deaths', 'recoveries', 'select-direction-cases');
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
     testingAvailability(allCovidndx, testingTotalAvailability, 'total_tests', 'testingAvailability');
     testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
@@ -90,22 +87,15 @@ var aggregateNumber = (ndx, chartID, column) => {
 };
 
 // Percent of Cases Number Display
-var aggregatePercentage = (ndx, chartID, column, TOTAL) => {
+var aggregatePercentage = (ndx, chartID, column) => {
+    var allInstances = ndx.groupAll().reduceSum(d => d[column]).value();
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
-            (
-                v.date === '2020-04-26'
-            )
-                ? p.cases += parseInt(v[column])
-                : p
+            p.cases += parseInt(v[column])
             return p
         },
         (p, v) => {
-            (
-                v.date === "2020-04-26"
-            )
-            ? p.cases -= parseInt(v[column])
-            : p
+            p.cases -= parseInt(v[column])
             return p;
         },
         () => {
@@ -114,7 +104,7 @@ var aggregatePercentage = (ndx, chartID, column, TOTAL) => {
     )
     chartID
     .formatNumber(d3.format(".2%"))
-    .valueAccessor(d => (d.cases / TOTAL))
+    .valueAccessor(d => d.cases / allInstances)
     .group(totalCasesNumber);
 };
 
@@ -148,23 +138,15 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
     var countryDim = ndx.dimension(d => d.location);
     var countryGroup = countryDim.group().reduce(
         (p, v) => {
-            if (v.date === '2020-04-25') {
                 p.cases += parseInt(v[cases]);
                 p.deaths += parseInt(v[deaths]);
                 p.recoveries += parseInt(v[recoveries]);
-            } else {
-                p
-            }
             return p
         },
         (p, v) => {
-            if (v.date === '2020-04-25') {
                 p.cases -= parseInt(v[cases]);
                 p.deaths -= parseInt(v[deaths]);
                 p.recoveries -= parseInt(v[recoveries])
-            } else {
-                p
-            }
             return p
         },
         () => {
@@ -228,19 +210,11 @@ var testingAvailability = (ndx, chartID, column, id) => {
     var testingDim = ndx.dimension(d => d.location);
     var testingGroup = testingDim.group().reduce(
         (p, v) => {
-            if (v.date === '2020-04-25') {
                 p.tests += parseInt(v[column]);
-            } else {
-                p;
-            }
             return p;
         },
         (p, v) => {
-            if (v.date === '2020-04-25') {
                 p.tests -= parseInt(v[column]);
-            } else {
-                p;
-            }
             return p;
         },
         () => {
@@ -343,6 +317,8 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     dailyCasesPerCountryOverview.margins().left += 15;
     dailyCasesPerCountryOverview.filterHandler(filterHandler);
 
+
+// Multi Chart Filter Handler - Modified From: https://stackoverflow.com/questions/55438591/dc-js-multichart-interaction-with-range-chart-pie-chart-goes-empty-when-filter
     function filterHandler(dimensions, filters) {
         if (filters.length === 0) {
           countriesDim.filter(null);
@@ -350,7 +326,6 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
           var filter = dc.filters.RangedFilter(filters[0][0], filters[0][1]);
           countriesDim.filterFunction(k => filter.isFiltered(k[1]));
           };
-        //   console.log('all',all.value());
         return filters;
       }
 
