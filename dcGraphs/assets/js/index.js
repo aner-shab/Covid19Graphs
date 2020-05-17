@@ -129,7 +129,8 @@ var searchByCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(d => d.location);
     var searchCountry = dc.textFilterWidget(chartID);
     searchCountry
-        .dimension(countryDim);
+        .dimension(countryDim)
+        .placeHolder('Search Countries...');
 };
 
 
@@ -222,7 +223,6 @@ var testingAvailability = (ndx, chartID, column, id) => {
         },
     )
     var heightRowChart = testingGroup.all().length;
-    console.log(heightRowChart);
     chartID
     .width(650)
     .height(heightRowChart*3)
@@ -249,14 +249,9 @@ var testingAvailability = (ndx, chartID, column, id) => {
     chartID.on('preRedraw', function(){
         var allrows = chartID.group().all().length;
         if (allrows < 15) {
-            console.log('if' + allrows)
             chartID.height((allrows * 40) + 40);
         } else {
-            console.log(heightRowChart)
-            console.log('else' + allrows)
             chartID.height(heightRowChart*3);
-            dc.filterAll();
-            dc.renderAll();
         }
     });
 }
@@ -294,6 +289,7 @@ function renderGradients(svg, id) {
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
+    var dailyCasesPerCountry = dc.seriesChart(chartID1);
     var dailyCasesPerCountryOverview = dc.seriesChart(chart2ID);
     var dateDim = ndx.dimension(d => d.Date);
     var countriesDim = ndx.dimension(d => [d.location, d.Date]);
@@ -352,7 +348,6 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     dailyCasesPerCountryOverview.margins().left += 15;
     dailyCasesPerCountryOverview.filterHandler(filterHandler);
 
-
 // Multi Chart Filter Handler - Modified From: https://stackoverflow.com/questions/55438591/dc-js-multichart-interaction-with-range-chart-pie-chart-goes-empty-when-filter
     function filterHandler(dimensions, filters) {
         if (filters.length === 0) {
@@ -362,8 +357,7 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
           countriesDim.filterFunction(k => filter.isFiltered(k[1]));
           };
         return filters;
-      }
-
+      };
 }
 
 // Remove Empty Groups - Taken from: 
@@ -377,3 +371,59 @@ function remove_empty_bins(source_group) {
         }
     };
 };
+
+    //   Both series charts zooming on rangeChart filter - Modified from: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/multi-focus.html
+
+    function rangesEqual(range1, range2) {
+        if (!range1 && !range2) {
+            return true;
+        }
+        else if (!range1 || !range2) {
+            return false;
+        }
+        else if (range1.length === 0 && range2.length === 0) {
+            return true;
+        }
+        else if (range1[0].valueOf() === range2[0].valueOf() &&
+            range1[1].valueOf() === range2[1].valueOf()) {
+            return true;
+        }
+        return false;
+    }
+
+    dailyCasesPerCountry.focusCharts = function (chartlist) {
+        if (!arguments.length) {
+            return this._focusCharts;
+        }
+        this._focusCharts = chartlist; // only needed to support the getter above
+        this.on('filtered', function (range_chart) {
+            chartlist.forEach(function(focus_chart) {
+                if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+                    dc.events.trigger(function () {
+                        focus_chart.focus(range_chart.filter());
+                    });
+                }
+            });
+        });
+        return this;
+    };
+
+    dailyCasesPerCountry.focusCharts([totalDeathsPerCountry]);
+
+    totalDeathsPerCountry.focusCharts = function (chartlist) {
+        if (!arguments.length) {
+            return this._focusCharts;
+        }
+        this._focusCharts = chartlist; // only needed to support the getter above
+        this.on('filtered', function (range_chart) {
+            chartlist.forEach(function(focus_chart) {
+                if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+                    dc.events.trigger(function () {
+                        focus_chart.focus(range_chart.filter());
+                    });
+                }
+            });
+        });
+        return this;
+    };
+    totalDeathsPerCountry.focusCharts([dailyCasesPerCountry]);
