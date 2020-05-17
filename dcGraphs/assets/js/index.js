@@ -221,26 +221,61 @@ var testingAvailability = (ndx, chartID, column, id) => {
             return {tests: 0};
         },
     )
-    
+    var heightRowChart = testingGroup.all().length;
+    console.log(heightRowChart);
     chartID
     .width(650)
-    .height(615)
+    .height(heightRowChart*3)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .transitionDuration(500)
+    .ordering(d => -d.value.tests)
     .dimension(testingDim)
-    .group(remove_empty_bins(testingGroup))
+    .group(remove_empty_bins_row(testingGroup))
     .valueAccessor(d => d.value.tests)
     .elasticX(true)
     .x(d3.scaleBand())
-    .ordering(d => -d.value.tests)
     .othersGrouper(false)
     .title(d => `${d.key}: ${formatNumber(d.value.tests)} tests`)
     .rowsCap(15)
-    .xAxis().ticks(8);
+    .fixedBarHeight(33)
+    .xAxis().ticks(8).scale(chartID.x());
 
+    // Add LinearGradient 
     chartID.on('postRender', function(){
-        renderGradients($(`#${id}1-row svg`), `${id}1`)
+        renderGradients($(`#${id}1-row svg`), `${id}1`);
     });
+
+    // Auto adjust height of rowchart based on number of rows in filter
+    chartID.on('preRedraw', function(){
+        var allrows = chartID.group().all().length;
+        if (allrows < 15) {
+            console.log('if' + allrows)
+            chartID.height((allrows * 40) + 40);
+        } else {
+            console.log(heightRowChart)
+            console.log('else' + allrows)
+            chartID.height(heightRowChart*3);
+            dc.filterAll();
+            dc.renderAll();
+        }
+    });
+}
+
+// Remove Empty Rows for Rowchart keeping RowCap
+function remove_empty_bins_row(source_group) {
+    function non_zero_pred(d) {
+        return d.value.tests != 0;
+    }
+    return {
+        all: function () {
+            return source_group.all().filter(non_zero_pred)
+        },
+        top: function(n) {
+            return source_group.top(Infinity)
+                .filter(non_zero_pred)
+                .slice(0, n);
+        }
+    };
 }
 
 // Modified from basic SVG gradient using CSS: https://stackoverflow.com/questions/14051351/svg-gradient-using-css
