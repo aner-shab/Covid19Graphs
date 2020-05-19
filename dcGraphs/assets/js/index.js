@@ -12,7 +12,8 @@ var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
 var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
-
+var seriesDiv = $('#dailyCasesPerCountry').width();
+var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
 
 // Load Data
 Promise.all([
@@ -310,7 +311,7 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     var minDate = formatTime("2020-01-25");
     var maxDate = dateDim.top(1)[0].Date;
     chartID1
-    .width(1200)
+    .width(700)
     .height(500)
     .chart(c => dc.lineChart(c).curve(d3.curveBasis).evadeDomainFilter(true).filterHandler(filterHandler))
     .seriesSort(d3.descending)
@@ -328,11 +329,11 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     .keyAccessor(d =>  d.key[1])
     .valueAccessor(d => d.value.cases)
     .title(d => `${d.key[0]}: ${formatNumber(d.value.cases)} cases on ${(d.key[1]).toLocaleDateString()}`);
-    chartID1.margins().left += 40;
+    chartID1.margins().left += seriesDiv * 0.065;
     chartID1.filterHandler(filterHandler);
 
     dailyCasesPerCountryOverview
-    .width(1200)
+    .width(720)
     .height(100)
     .chart(c => dc.lineChart(c).curve(d3.curveBasis).filterHandler(filterHandler))
     .seriesSort(d3.descending)
@@ -345,7 +346,7 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     .keyAccessor(d =>  d.key[1])
     .valueAccessor(d => d.value.cases)
     .yAxis().ticks(3)
-    dailyCasesPerCountryOverview.margins().left += 15;
+    dailyCasesPerCountryOverview.margins().left += seriesRangeDiv * 0.045;
     dailyCasesPerCountryOverview.filterHandler(filterHandler);
 
 // Multi Chart Filter Handler - Modified From: https://stackoverflow.com/questions/55438591/dc-js-multichart-interaction-with-range-chart-pie-chart-goes-empty-when-filter
@@ -427,3 +428,8 @@ function remove_empty_bins(source_group) {
         return this;
     };
     totalDeathsPerCountry.focusCharts([dailyCasesPerCountry]);
+
+    window.onresize = function() {
+        console.log('go');
+        dc.redrawAll();
+    };

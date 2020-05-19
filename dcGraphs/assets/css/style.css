@@ -50,3 +50,9 @@ rect {
 .four-stop {
     stop-color:#88abab;
 }
+
+.scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
