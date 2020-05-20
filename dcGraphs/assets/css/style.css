@@ -19,6 +19,10 @@ td.dc-table-label {
     display: none;
 }
 
+.ui.button, .ui.buttons .button, .ui.buttons .or {
+    font-size: 0.85rem;
+}
+
 /* Testing Row Chart */
 #testingAvailability1-row rect {
     fill: url(#testingAvailability1);
@@ -39,20 +43,29 @@ rect {
 
 /* Row Chart Bar Gradient */
 .one-stop {
-    stop-color:#00b5ad
+    stop-color:#a333c8;
 }
 .two-stop {
-    stop-color: #5fb0ae;
+    stop-color: #c281d8;
 }
 .three-stop {
-    stop-color: #75aead;
+    stop-color: #d0a3df;
 }
 .four-stop {
-    stop-color:#88abab;
+    stop-color:#ddc4e5;
 }
 
 .scrolling-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
+}
+
+/* Media Queries */
+
+/* Preventing Stats from Exceeding Card Width */
+@media (min-width: 990px) and (max-width: 1270px) {
+    .ui.statistic>.value, .ui.statistics .statistic>.value {
+        font-size: 3rem!important;
+    }
 }
