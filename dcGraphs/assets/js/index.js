@@ -12,8 +12,10 @@ var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
 var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
+var rowDiv = $('#testingAvailability1-row').width();
 var seriesDiv = $('#dailyCasesPerCountry').width();
 var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
+
 
 // Load Data
 Promise.all([
@@ -45,11 +47,9 @@ Promise.all([
     testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
     casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
-    
+
     dc.renderAll();
-
 });
-
 
 var removeNaN = (value) => {
     if (value != "") {
@@ -60,13 +60,11 @@ var removeNaN = (value) => {
 };
 
 
-var svgSize = (svgWidth) => {
-    if (svgWidth > 650) {
-        console.log(svgWidth);
+var svgSize = (svgWidth, smallestWidth) => {
+    if (svgWidth > smallestWidth) {
         return svgWidth;
     } else {
-        console.log(650);
-        return 670;
+        return smallestWidth;
     }
 }
 
@@ -234,11 +232,12 @@ var testingAvailability = (ndx, chartID, column, id) => {
             return {tests: 0};
         },
     )
+    var rowChartWidth = svgSize(rowDiv, 230);
     var heightRowChart = testingGroup.all().length;
     chartID
-    .width(650)
-    .height(heightRowChart*3)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .width(rowChartWidth)
+    .height(heightRowChart * 3)
+    .margins({top: heightRowChart/10, right: (rowChartWidth * 0.02), bottom: (heightRowChart/10), left: (rowChartWidth * 0.02)})
     .transitionDuration(500)
     .ordering(d => -d.value.tests)
     .dimension(testingDim)
@@ -250,7 +249,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
     .title(d => `${d.key}: ${formatNumber(d.value.tests)} tests`)
     .rowsCap(15)
     .fixedBarHeight(33)
-    .xAxis().ticks(8).scale(chartID.x());
+    .xAxis().ticks(rowChartWidth/75).scale(chartID.x());
 
     // Add LinearGradient 
     chartID.on('postRender', function(){
@@ -263,7 +262,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
         if (allrows < 15) {
             chartID.height((allrows * 40) + 40);
         } else {
-            chartID.height(heightRowChart*3);
+            chartID.height(heightRowChart*3.5);
         }
     });
 }
@@ -301,8 +300,8 @@ function renderGradients(svg, id) {
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
-    var seriesDivWidth = svgSize(seriesDiv);
-    var seriesRangeDivWidth = svgSize(seriesRangeDiv)
+    var seriesDivWidth = svgSize(seriesDiv, 670);
+    var seriesRangeDivWidth = svgSize(seriesRangeDiv, 670)
     var dailyCasesPerCountryOverview = dc.seriesChart(chart2ID);
     var dateDim = ndx.dimension(d => d.Date);
     var countriesDim = ndx.dimension(d => [d.location, d.Date]);
@@ -440,8 +439,3 @@ function remove_empty_bins(source_group) {
         return this;
     };
     totalDeathsPerCountry.focusCharts([dailyCasesPerCountry]);
-
-    window.onresize = function() {
-        console.log('go');
-        dc.redrawAll();
-    };
