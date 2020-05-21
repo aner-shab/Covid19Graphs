@@ -48,7 +48,7 @@ Promise.all([
     casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
 
-    
+    apply_resizing([testingTotalAvailability, testingThousandAvailability]);
 
     dc.renderAll();
 });
@@ -265,7 +265,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
         if (allrows < 15) {
             chartID.height((allrows * 40) + 40);
         } else {
-            chartID.height(heightRowChart*3.5);
+            chartID.height(heightRowChart*3);
         }
     });
 }
