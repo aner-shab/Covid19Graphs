@@ -9,8 +9,18 @@ z-index: 9999;
 background: url(https://media.giphy.com/media/mBuuwdbwYhiIj35kUL/source.gif) center no-repeat #F7F1EF;
 }
 
-body {
-    background-color: #fafafa;
+/* Search */
+
+.ui.input>input {
+    border-radius: 2rem;
+}
+
+.ui.icon.input>i.icon {
+    top: 30%;
+}
+
+.ui.input>input:focus {
+    border-color: #c281d8;
 }
 
 /* Table */

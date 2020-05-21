@@ -41,10 +41,12 @@ function apply_resizing(chart, adjustX, onresize) {
             chart.forEach(c => {
                 var rowDiv = $('#testingAvailability1-row').width();
                 c.width(adjustX(rowDiv))
+                    .xAxis().ticks(rowDiv/75)
+
                 if (c.rescale) {
                     c.rescale();
                 }
             });
             redraw_chart_no_transitions(chart);
         };
-}
+    };
