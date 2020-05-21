@@ -48,6 +48,8 @@ Promise.all([
     casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
 
+    
+
     dc.renderAll();
 });
 
@@ -232,10 +234,10 @@ var testingAvailability = (ndx, chartID, column, id) => {
             return {tests: 0};
         },
     )
-    var rowChartWidth = svgSize(rowDiv, 230);
+    var rowChartWidth = svgSize(rowDiv, 210);
     var heightRowChart = testingGroup.all().length;
     chartID
-    .width(rowChartWidth)
+    .width(rowChartWidth * 0.90)
     .height(heightRowChart * 3)
     .margins({top: heightRowChart/10, right: (rowChartWidth * 0.02), bottom: (heightRowChart/10), left: (rowChartWidth * 0.02)})
     .transitionDuration(500)
@@ -250,6 +252,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
     .rowsCap(15)
     .fixedBarHeight(33)
     .xAxis().ticks(rowChartWidth/75).scale(chartID.x());
+
 
     // Add LinearGradient 
     chartID.on('postRender', function(){
