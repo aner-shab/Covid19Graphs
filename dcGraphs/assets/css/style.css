@@ -9,6 +9,11 @@ z-index: 9999;
 background: url(https://media.giphy.com/media/mBuuwdbwYhiIj35kUL/source.gif) center no-repeat #F7F1EF;
 }
 
+/* General Styling */
+body, body.pushable>.pusher {
+    background: #f6ebfa;
+  }
+
 /* Search */
 
 .ui.input>input {
@@ -20,7 +25,7 @@ background: url(https://media.giphy.com/media/mBuuwdbwYhiIj35kUL/source.gif) cen
 }
 
 .ui.input>input:focus {
-    border-color: #c281d8;
+    border-color: #ddc4e5;
 }
 
 /* Table */

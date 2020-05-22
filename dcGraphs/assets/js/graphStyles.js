@@ -10,7 +10,12 @@ $(document).ready(function() {
 	});
 
 	// Data Table Tabs
-	$('.menu .item').tab();
+    $('.menu .item').tab();
+
+        $('.ui.dropdown')
+        .dropdown({
+            clearable: true
+          });
 
 });
 
