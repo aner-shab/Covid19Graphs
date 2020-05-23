@@ -42,12 +42,18 @@
                         <p>Some info about the COVID Graphs/Situation to go here.</p>
                     </div>
                     <div class="extra content center aligned middle aligned">
-                        <button class="ui huge basic purple icon button" id='toggleMenu'>
+                        <button class="ui huge basic purple icon button" id='toggleMenu' title="View Menu">
                             <i class='ui icon'>
                                 <i class='fas fa-cogs'></i>
                             </i>
                               Settings
                         </button>
+                        <a class="ui huge basic purple icon button" href="javascript:dc.filterAll();dc.redrawAll();" title="Reset All Charts">
+                            <i class='ui icon'>
+                                <i class='fas fa-redo'></i>
+                            </i>
+                              Reset All
+                        </a>
                     </div>
                 </div>
             </div>
@@ -153,6 +159,7 @@
                         <h2 class="label ui left floated header">
                             Cases per Country
                         </h2>
+
                         <div class="ui clearing divider"></div>
                         <table id="topCountries" class="ui tablet stackable celled striped purple compact table">
                             <thead class="full-width">
@@ -224,16 +231,22 @@
                         <a class="item" data-tab="per_thousand">Per Thousand</a>
                     </div>
                     <div class="ui bottom attached tab segment active" data-tab="total-test">
-                        <h2 class="label ui left floated header">
-                            Testing Availability Per Country
-                        </h2>
+                        <a class="ui left floated right labeled icon huge button" href="javascript:testingTotalAvailability.filterAll();dc.redrawAll();" title="Reset This Chart">
+                                <i class='ui purple icon center aligned'>
+                                    <i class='fas fa-redo individual'></i>
+                                </i>
+                                Testing Availability Per Country
+                            </a>
                         <div class="ui clearing divider"></div>
                         <div id="testingAvailability1-row"></div>
                     </div>
                     <div class="ui bottom attached tab segment" data-tab="per_thousand">
-                        <h2 class="label ui left floated header">
+                        <a class="ui left floated right labeled icon huge button" href="javascript:testingThousandAvailability.filterAll();dc.redrawAll();" title="Reset This Chart">
+                            <i class='ui purple icon center aligned'>
+                                <i class='fas fa-redo individual'></i>
+                            </i>
                             Testing Per Thousand
-                        </h2>
+                        </a>
                         <div class="ui clearing divider"></div>
                         <div id="testingThousandAvailability1-row"></div>
                     </div>
@@ -244,9 +257,12 @@
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui raised padded text raised segment">
-                        <h2 class="label ui left floated header">
+                        <a class="ui left floated right labeled icon huge button" href="javascript:dailyCasesPerCountry.filterAll();dc.redrawAll();" title="Reset This Chart">
+                            <i class='ui purple icon center aligned'>
+                                <i class='fas fa-redo individual'></i>
+                            </i>
                             Daily Cases Per Country From January to April
-                        </h2>
+                        </a>
                         <div class="ui clearing divider"></div>
                         <div class="scrolling-wrapper">
                             <div id="dailyCasesPerCountry"></div>
@@ -258,9 +274,12 @@
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui raised padded text raised segment">
-                        <h2 class="label ui left floated header">
+                        <a class="ui left floated right labeled icon huge button" href="javascript:totalDeathsPerCountry.filterAll();dc.redrawAll();" title="Reset This Chart">
+                            <i class='ui purple icon center aligned'>
+                                <i class='fas fa-redo individual'></i>
+                            </i>
                             Fatalities Per Country From January to April
-                        </h2>
+                        </a>
                         <div class="ui clearing divider"></div>
                         <div class="scrolling-wrapper">
                             <div id="fatalityRatePerCountry"></div>
@@ -276,7 +295,6 @@
     <script src="libraries/js/crossfilter.min.js"></script>
     <script src="libraries/js/dc.min.js"></script>
     <script src="libraries/js/queue.min.js"></script>
-    <script src="libraries/js/dc-restore-transition-duration.js"></script>
     <script src="libraries/js/dc-resizing.js"></script>
     <script src="assets/js/index.js"></script>
 </body>

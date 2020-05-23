@@ -24,7 +24,11 @@ body, body.pushable>.pusher {
     top: 30%;
 }
 
-.ui.input>input:focus {
+.ui.input>input:focus,
+.ui.selection.dropdown:focus,
+.ui.selection.active.dropdown .menu,
+.ui.selection.active.dropdown:hover .menu,
+.ui.selection.active.dropdown:hover {
     border-color: #ddc4e5;
 }
 
@@ -54,6 +58,15 @@ rect {
 
 .dc-chart g.row text {
     fill: rgb(27, 28, 29);
+}
+
+svg.svg-inline--fa.fa-redo.fa-w-16.individual {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 /* Row Chart Bar Gradient */
