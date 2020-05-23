@@ -6,12 +6,14 @@ var totalRecoveries = dc.numberDisplay('#totalRecoveries');
 var percentageOfCases = dc.numberDisplay('#countryCasePercent');
 var percentageOfDeaths = dc.numberDisplay('#countryDeathPercent');
 var percentageOfRecoveries = dc.numberDisplay('#countryRecoveryPercent');
+var countryFilterDropdown = dc.selectMenu('#countryDropDown');
+var searchCountryWidget = dc.textFilterWidget('#search');
 var totalStatsTable = dc.dataTable('#topCountries');
 var statsPerMillion = dc.dataTable('#topCountriesPerMillion');
 var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
 var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
-// var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
-// var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
+var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
+var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 var rowDiv = $('#testingAvailability1-row').width();
 var seriesDiv = $('#dailyCasesPerCountry').width();
 var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
@@ -39,14 +41,14 @@ Promise.all([
     aggregatePercentage(allCovidndx, percentageOfCases, 'New Cases');
     aggregatePercentage(allCovidndx, percentageOfDeaths, 'New Deaths');
     aggregatePercentage(allCovidndx, percentageOfRecoveries, 'recoveries');
-    countryDropDown(allCovidndx, '#countryDropDown');
-    searchByCountry(allCovidndx, '#search');
+    countryDropDown(allCovidndx, countryFilterDropdown);
+    searchByCountry(allCovidndx, searchCountryWidget);
     highestCasesPerCountry(allCovidndx, totalStatsTable, 'New Cases', 'New Deaths', 'recoveries', 'select-direction-cases');
     highestCasesPerCountry(allCovidndx, statsPerMillion, 'total_cases_per_million', 'total_deaths_per_million', 'recoveries_per_million', 'select-direction-mill');
     testingAvailability(allCovidndx, testingTotalAvailability, 'total_tests', 'testingAvailability');
     testingAvailability(allCovidndx, testingThousandAvailability, 'total_tests_per_thousand', 'testingThousandAvailability');
-    // casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
-    // casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
+    casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
+    casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
 
     apply_resizing([testingTotalAvailability, testingThousandAvailability]);
 
@@ -125,23 +127,21 @@ var aggregatePercentage = (ndx, chartID, column) => {
 var countryDropDown = (ndx, chartID) => {
     var countriesDim = ndx.dimension(dc.pluck('location'));
     var countriesGroup = countriesDim.group();
-    var countrySelect = dc.selectMenu(chartID);
-    countrySelect
+    chartID
     .dimension(countriesDim)
     .group(countriesGroup)
     .title(d=> `${d.key}`)
     .controlsUseVisibility(true);
 
-    countrySelect.on('pretransition', function(countrySelect){
-        countrySelect.select('select').classed('ui selection dropdown', true);
+    chartID.on('pretransition', function(chartID){
+        chartID.select('select').classed('ui selection dropdown', true);
     });
 };
 
 // Text search for country data
 var searchByCountry = (ndx, chartID) => {
     var countryDim = ndx.dimension(d => d.location);
-    var searchCountry = dc.textFilterWidget(chartID);
-    searchCountry
+    chartID
         .dimension(countryDim)
         .placeHolder('Search Countries...');
 };
@@ -237,7 +237,6 @@ var testingAvailability = (ndx, chartID, column, id) => {
     )
     var rowChartWidth = svgSize(rowDiv, 210);
     var heightRowChart = testingGroup.all().length;
-    console.log('height row' + heightRowChart);
     chartID
     .width(rowChartWidth * 0.90)
     .height(heightRowChart * 3)
@@ -268,7 +267,6 @@ var testingAvailability = (ndx, chartID, column, id) => {
             $('#testingAvailability1-row').height(615)
             chartID.height(615)
                 .margins({top: heightRowChart/10, right: (rowChartWidth * 0.02), bottom: (heightRowChart/10), left: (rowChartWidth * 0.02)});
-           
         } else {
             chartID.height((allrows * 50) + 40);
         }

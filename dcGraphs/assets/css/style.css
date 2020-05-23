@@ -12,7 +12,24 @@ background: url(https://media.giphy.com/media/mBuuwdbwYhiIj35kUL/source.gif) cen
 /* General Styling */
 body, body.pushable>.pusher {
     background: #f6ebfa;
-  }
+}
+
+svg.svg-inline--fa.fa-redo.fa-w-16.individual {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+div#toggleMenu {
+    margin-bottom: 1em;
+    margin-top: 2.6em;
+}
+
+.ui.button:not(.icon)>.icon:not(.button):not(.dropdown) {
+    margin: 0 .25rem 0 0;
+}
 
 /* Search */
 
@@ -58,15 +75,6 @@ rect {
 
 .dc-chart g.row text {
     fill: rgb(27, 28, 29);
-}
-
-svg.svg-inline--fa.fa-redo.fa-w-16.individual {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
 }
 
 /* Row Chart Bar Gradient */
