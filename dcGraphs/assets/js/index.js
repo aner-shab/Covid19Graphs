@@ -14,19 +14,14 @@ var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
 
-// Format Helper Functions
-var formatTime = d3.timeParse("%Y-%m-%d");
-var formatNumber = d3.format(",");
-
 // Chart Divs for Dynamic Resizing
 var rowDiv = $('#testingAvailability1-row').width();
 var seriesDiv = $('#dailyCasesPerCountry').width();
 var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
 
-
 // Load and Process Data; Render Charts
 Promise.all([
-  d3.csv('data/owid-covid-data.csv')
+    d3.csv('data/owid-covid-data.csv')
 ])
 .then(([allCovid]) =>  {
 
@@ -37,7 +32,7 @@ Promise.all([
         d.total_deaths_per_million = removeNaN(d['new_deaths_per_million']);
         d.recoveries_per_million = calculateRecoveries(d['new_cases_per_million'], d['new_deaths_per_million']);
         d.total_tests = removeNaN(d['new_tests']);
-        d.total_tests_per_thousand = removeNaN(d['new_tests_per_thousand'])
+        d.total_tests_per_thousand = removeNaN(d['new_tests_per_thousand']);
     }
 
     var allCovidndx = crossfilter(allCovid);
@@ -63,46 +58,22 @@ Promise.all([
     dc.renderAll();
 });
 
-// Remove NaN values from column
-var removeNaN = (value) => {
-    if (value != "") {
-        return value;
-    } else {
-        return 0;
-    }
-};
-
-// Size SVG based on size of parent div or given minimum size
-var svgSize = (svgWidth, smallestWidth) => {
-    if (svgWidth > smallestWidth) {
-        return svgWidth;
-    } else {
-        return smallestWidth;
-    }
-}
-
-// Table Responsiveness
-var tableStyling = () => {
-    $("td.dc-table-column._2").addClass('right aligned');
-    $("td.dc-table-column._3").addClass('right aligned');
-    $("td.dc-table-column._4").addClass('right aligned');
-};
 
 // Total Cases recorded as of 5 April 2020 Number Display
 var aggregateNumber = (ndx, chartID, column) => {
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
-            p.cases += parseInt(v[column])
-            return p
+            p.cases += parseInt(v[column]);
+            return p;
         },
         (p, v) => {
-            p.cases -= parseInt(v[column])
+            p.cases -= parseInt(v[column]);
             return p;
         },
         () => {
             return {cases: 0};
         },
-    )
+    );
     chartID
     .formatNumber(d3.format(','))
     .valueAccessor(d => +d.cases)
@@ -114,17 +85,17 @@ var aggregatePercentage = (ndx, chartID, column) => {
     var allInstances = ndx.groupAll().reduceSum(d => d[column]).value();
     var totalCasesNumber = ndx.groupAll().reduce(
         (p, v) => {
-            p.cases += parseInt(v[column])
-            return p
+            p.cases += parseInt(v[column]);
+            return p;
         },
         (p, v) => {
-            p.cases -= parseInt(v[column])
+            p.cases -= parseInt(v[column]);
             return p;
         },
         () => {
             return {cases: 0};
         },
-    )
+    );
     chartID
     .formatNumber(d3.format(".2%"))
     .valueAccessor(d => d.cases / allInstances)
@@ -164,18 +135,18 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
                 p.cases += parseInt(v[cases]);
                 p.deaths += parseInt(v[deaths]);
                 p.recoveries += parseInt(v[recoveries]);
-            return p
+            return p;
         },
         (p, v) => {
                 p.cases -= parseInt(v[cases]);
                 p.deaths -= parseInt(v[deaths]);
-                p.recoveries -= parseInt(v[recoveries])
-            return p
+                p.recoveries -= parseInt(v[recoveries]);
+            return p;
         },
         () => {
             return {cases: 0, deaths: 0, recoveries: 0};
         },
-    )
+    );
     
     var i = 0;
     chartID
@@ -200,33 +171,11 @@ var highestCasesPerCountry = (ndx, chartID, cases, deaths, recoveries, button) =
     d3.selectAll(`#${button} button`)
       .on('click', function() {
           // this.value is 'ascending' or 'descending'
-          chartID.order(d3[this.value]).redraw()
+          chartID.order(d3[this.value]).redraw();
           tableStyling();
       });
 };
 
-
-// Fake Dimension to Wrap the Group to toggle sorting and hide rows with zero cases
-//  Modified From: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/table-on-aggregated-data.html
-  function reversible_group(source_group) {
-    function non_zero_pred(d) {
-        return d.value.cases != 0;
-    }
-    return {
-        all: function () {
-            return source_group.all().filter(non_zero_pred);
-        },
-        top: function(N) {
-            return source_group.top(N)
-                .filter(non_zero_pred)
-        },
-          bottom: function(N) {
-            return source_group.top(Infinity)
-                .filter(non_zero_pred)
-                .slice(-N).reverse();
-        }
-    };
-};
 
 // Testing Availability Row chart
 var testingAvailability = (ndx, chartID, column, id) => {
@@ -243,7 +192,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
         () => {
             return {tests: 0};
         },
-    )
+    );
     var rowChartWidth = svgSize(rowDiv, 210);
     var heightRowChart = testingGroup.all().length;
     chartID
@@ -274,7 +223,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
     chartID.on('preRedraw', function(){
         var allrows = chartID.group().all().length;
         if (allrows > 14 || allrows == 0) {
-            $(`#${id}1-row svg`).height(615)
+            $(`#${id}1-row svg`).height(615);
             chartID.height(615)
                 .margins({top: heightRowChart/10, right: (rowChartWidth * 0.02), bottom: (heightRowChart/10), left: (rowChartWidth * 0.02)});
                 $(`#${id}1-row .nothing`).hide();
@@ -291,7 +240,6 @@ var testingAvailability = (ndx, chartID, column, id) => {
         var finalrowcount = chartID.group().all().length;
         if (finalrowcount == 0) {
             var finalrowcount = chartID.group().all().length;
-            console.log(chartID);
             $(`#${id}1-row svg`).hide();
             $(`#${id}1-row`).prepend(
                 `<div class="ui placeholder segment nothing middle aligned">
@@ -310,38 +258,8 @@ var testingAvailability = (ndx, chartID, column, id) => {
             $(`#${id}1-row svg`).show();
         }
     })
-}
+};
 
-// Remove Empty Rows for Rowchart keeping RowCap
-function remove_empty_bins_row(source_group) {
-    function non_zero_pred(d) {
-        return d.value.tests != 0;
-    }
-    return {
-        all: function () {
-            return source_group.all().filter(non_zero_pred)
-        },
-        top: function(n) {
-            return source_group.top(Infinity)
-                .filter(non_zero_pred)
-                .slice(0, n);
-        }
-    };
-}
-
-// Modified from basic SVG gradient using CSS: https://stackoverflow.com/questions/14051351/svg-gradient-using-css
-function renderGradients(svg, id) {
-    let gradient = `<svg width="0" height="0" version="1.1">
-                        <linearGradient id="${id}">
-                            <stop class="one-stop" offset="0%"/>
-                            <stop class="two-stop" offset="25%"/>
-                            <stop class="three-stop" offset="75%"/>
-                            <stop class="four-stop" offset="100%"/>
-                        </linearGradient>
-                        <rect width="0" height="0" fill="url(#${id})"/>
-                    </svg>`;
-    svg.prepend(gradient);
-}
 
 // Cases Per Country seriesChart
 var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
@@ -352,17 +270,17 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     var countriesDim = ndx.dimension(d => [d.location, d.Date]);
     var countryGroup = countriesDim.group().reduce(
         (p, v) => {
-            p.cases += parseInt(v[casesCountType])
+            p.cases += parseInt(v[casesCountType]);
             return p;
         },
         (p, v) => {
-            p.cases -= parseInt(v[casesCountType])
+            p.cases -= parseInt(v[casesCountType]);
             return p;
         },
         () => {
             return {cases: 0};
         },
-    )
+    );
     var filteredCountryGroup = remove_empty_bins(countryGroup);
     var minDate = formatTime("2020-01-25");
     var maxDate = dateDim.top(1)[0].Date;
@@ -406,82 +324,51 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     dailyCasesPerCountryOverview.margins().left += seriesRangeDivWidth * 0.045;
     dailyCasesPerCountryOverview.filterHandler(filterHandler);
 
-// Multi Chart Filter Handler - Modified From: https://stackoverflow.com/questions/55438591/dc-js-multichart-interaction-with-range-chart-pie-chart-goes-empty-when-filter
+    // Multi Chart Filter Handler - Modified From: https://stackoverflow.com/questions/55438591/dc-js-multichart-interaction-with-range-chart-pie-chart-goes-empty-when-filter
     function filterHandler(dimensions, filters) {
         if (filters.length === 0) {
-          countriesDim.filter(null);
+        countriesDim.filter(null);
         } else {
-          var filter = dc.filters.RangedFilter(filters[0][0], filters[0][1]);
-          countriesDim.filterFunction(k => filter.isFiltered(k[1]));
-          };
+        var filter = dc.filters.RangedFilter(filters[0][0], filters[0][1]);
+        countriesDim.filterFunction(k => filter.isFiltered(k[1]));
+        };
         return filters;
-      };
-}
-
-// Remove Empty Groups - Taken from: 
-// https://github.com/dc-js/dc.js/wiki/FAQ#how-do-i-filter-the-data-before-its-charted
-function remove_empty_bins(source_group) {
-    return {
-        all:function () {
-            return source_group.all().filter(function(d) {
-                return d.value !== 0;
-            });
-        }
     };
 };
 
-    //   Both series charts zooming on rangeChart filter - Modified from: https://github.com/dc-js/dc.js/blob/develop/web-src/examples/multi-focus.html
-
-    function rangesEqual(range1, range2) {
-        if (!range1 && !range2) {
-            return true;
-        }
-        else if (!range1 || !range2) {
-            return false;
-        }
-        else if (range1.length === 0 && range2.length === 0) {
-            return true;
-        }
-        else if (range1[0].valueOf() === range2[0].valueOf() &&
-            range1[1].valueOf() === range2[1].valueOf()) {
-            return true;
-        }
-        return false;
+dailyCasesPerCountry.focusCharts = function (chartlist) {
+    if (!arguments.length) {
+        return this._focusCharts;
     }
-
-    dailyCasesPerCountry.focusCharts = function (chartlist) {
-        if (!arguments.length) {
-            return this._focusCharts;
-        }
-        this._focusCharts = chartlist; // only needed to support the getter above
-        this.on('filtered', function (range_chart) {
-            chartlist.forEach(function(focus_chart) {
-                if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
-                    dc.events.trigger(function () {
-                        focus_chart.focus(range_chart.filter());
-                    });
-                }
-            });
+    this._focusCharts = chartlist; // only needed to support the getter above
+    this.on('filtered', function (range_chart) {
+        chartlist.forEach(function(focus_chart) {
+            if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+                dc.events.trigger(function () {
+                    focus_chart.focus(range_chart.filter());
+                });
+            }
         });
-        return this;
-    };
+    });
+    return this;
+};
 
-    dailyCasesPerCountry.focusCharts([totalDeathsPerCountry]);
+dailyCasesPerCountry.focusCharts([totalDeathsPerCountry]);
 
-    totalDeathsPerCountry.focusCharts = function (chartlist) {
-        if (!arguments.length) {
-            return this._focusCharts;
-        }
-        this._focusCharts = chartlist; // only needed to support the getter above
-        this.on('filtered', function (range_chart) {
-            chartlist.forEach(function(focus_chart) {
-                if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
-                    dc.events.trigger(function () {
-                        focus_chart.focus(range_chart.filter());
-                    });
-                }
-            });
+totalDeathsPerCountry.focusCharts = function (chartlist) {
+    if (!arguments.length) {
+        return this._focusCharts;
+    }
+    this._focusCharts = chartlist; // only needed to support the getter above
+    this.on('filtered', function (range_chart) {
+        chartlist.forEach(function(focus_chart) {
+            if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+                dc.events.trigger(function () {
+                    focus_chart.focus(range_chart.filter());
+                });
+            }
         });
-        return this;
-    };
-    totalDeathsPerCountry.focusCharts([dailyCasesPerCountry]);
+    });
+    return this;
+};
+totalDeathsPerCountry.focusCharts([dailyCasesPerCountry]);

@@ -7,24 +7,21 @@
     <link rel="stylesheet" href="libraries/css/dc.min.css">
     <link rel="stylesheet" href="libraries/css/semantic.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <script src="libraries/js/jquery.min.js"></script>
-    <script src="libraries/js/semantic.min.js"></script>
-    <script src="assets/js/graphStyles.js"></script>
     <title>COVID-19 DC.js Dashboard</title>
 </head>
 <body>
     <div class="loading-gif"></div>
     <!-- Sidebar Menu -->
     <div id='sidebar' class="ui left demo vertical inverted sidebar labeled icon purple menu">
-        <a class="item">
+        <a class="item disabled">
             <i class="fas fa-home icon"></i>
             Home
         </a>
-        <a class="item">
+        <a class="item disabled">
             <i class="fas fa-calendar-day icon"></i>
             Live
         </a>
-        <a class="item">
+        <a class="item" href='https://github.com/hschafer2017/Covid19Graphs'>
             <i class="fas fa-code icon"></i>
             Source
         </a>
@@ -345,12 +342,15 @@
              <!-- ./Fatalities Per Country Over Time Series -->
         </div>
     </div>
-    <script src="libraries/font_awesome/all.min.js"></script>
+    <script src="libraries/js/jquery.min.js"></script>
+    <script src="libraries/js/semantic.min.js"></script>
     <script src="libraries/js/d3.v5.min.js"></script>
+    <script src="assets/js/graphStyles.js"></script>
     <script src="libraries/js/crossfilter.min.js"></script>
     <script src="libraries/js/dc.min.js"></script>
     <script src="libraries/js/queue.min.js"></script>
     <script src="libraries/js/dc-resizing.js"></script>
+    <script src="libraries/font_awesome/all.min.js"></script>
     <script src="assets/js/index.js"></script>
 </body>
 </html>
