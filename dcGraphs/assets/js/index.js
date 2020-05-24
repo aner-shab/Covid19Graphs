@@ -1,5 +1,4 @@
-var formatTime = d3.timeParse("%Y-%m-%d");
-var formatNumber = d3.format(",");
+// All DC Graphs
 var totalCasesRecorded = dc.numberDisplay('#totalConfirmedCases');
 var totalDeathsRecorded = dc.numberDisplay('#totalDeaths');
 var totalRecoveries = dc.numberDisplay('#totalRecoveries');
@@ -14,16 +13,23 @@ var testingTotalAvailability = dc.rowChart('#testingAvailability1-row');
 var testingThousandAvailability = dc.rowChart('#testingThousandAvailability1-row');
 var dailyCasesPerCountry = dc.seriesChart('#dailyCasesPerCountry');
 var totalDeathsPerCountry = dc.seriesChart('#fatalityRatePerCountry');
+
+// Format Helper Functions
+var formatTime = d3.timeParse("%Y-%m-%d");
+var formatNumber = d3.format(",");
+
+// Chart Divs for Dynamic Resizing
 var rowDiv = $('#testingAvailability1-row').width();
 var seriesDiv = $('#dailyCasesPerCountry').width();
 var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
 
 
-// Load Data
+// Load and Process Data; Render Charts
 Promise.all([
   d3.csv('data/owid-covid-data.csv')
 ])
 .then(([allCovid]) =>  {
+
     for (let d of allCovid) {
         d.Date = formatTime(d.date);
         d.recoveries = calculateRecoveries(d['New Cases'], d['New Deaths']);
@@ -33,6 +39,7 @@ Promise.all([
         d.total_tests = removeNaN(d['new_tests']);
         d.total_tests_per_thousand = removeNaN(d['new_tests_per_thousand'])
     }
+
     var allCovidndx = crossfilter(allCovid);
 
     aggregateNumber(allCovidndx, totalCasesRecorded, 'New Cases');
@@ -50,11 +57,13 @@ Promise.all([
     casesPerCountry(allCovidndx, dailyCasesPerCountry, '#dailyCasesPerCountryOverview', 'New Cases');
     casesPerCountry(allCovidndx, totalDeathsPerCountry, '#fatalityRatePerCountryOverview', 'New Deaths');
 
+    // Apply dynamic resizing to Testing Row Chart
     apply_resizing([testingTotalAvailability, testingThousandAvailability]);
 
     dc.renderAll();
 });
 
+// Remove NaN values from column
 var removeNaN = (value) => {
     if (value != "") {
         return value;
@@ -63,7 +72,7 @@ var removeNaN = (value) => {
     }
 };
 
-
+// Size SVG based on size of parent div or given minimum size
 var svgSize = (svgWidth, smallestWidth) => {
     if (svgWidth > smallestWidth) {
         return svgWidth;
@@ -250,6 +259,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
     .x(d3.scaleBand())
     .othersGrouper(false)
     .title(d => `${d.key}: ${formatNumber(d.value.tests)} tests`)
+    .label(d => `${d.key} - ${formatNumber(d.value.tests)} tests`)
     .rowsCap(15)
     .fixedBarHeight(33)
     .xAxis().ticks(rowChartWidth/75).scale(chartID.x());
@@ -276,6 +286,7 @@ var testingAvailability = (ndx, chartID, column, id) => {
         }
     });
 
+    // If no testing data available, show notification message
     chartID.on('postRedraw', function() {
         var finalrowcount = chartID.group().all().length;
         if (finalrowcount == 0) {
@@ -377,6 +388,7 @@ var casesPerCountry = (ndx, chartID1, chart2ID, casesCountType) => {
     chartID1.margins().left += seriesDivWidth * 0.065;
     chartID1.filterHandler(filterHandler);
 
+    // Range Chart Associated With Above Series Chart
     dailyCasesPerCountryOverview
     .width(seriesRangeDivWidth)
     .height(100)

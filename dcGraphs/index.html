@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="libraries/font_awesome/all.min.css">
     <link rel="stylesheet" href="libraries/css/dc.min.css">
     <link rel="stylesheet" href="libraries/css/semantic.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -14,6 +14,7 @@
 </head>
 <body>
     <div class="loading-gif"></div>
+    <!-- Sidebar Menu -->
     <div id='sidebar' class="ui left demo vertical inverted sidebar labeled icon purple menu">
         <a class="item">
             <i class="fas fa-home icon"></i>
@@ -28,8 +29,10 @@
             Source
         </a>
     </div>
+    <!-- ./Sidebar Menu -->
     <div class="pusher">
         <div class="ui stackable doubling two column centered padded grid">
+            <!-- Main Header Card -->
             <div class="stretched column">
                 <div class="ui fluid centered card raised very padded text raised segment">
                     <div class="center aligned middle aligned content">
@@ -65,8 +68,10 @@
                     </div>
                 </div>
             </div>
+            <!-- ./Main Header Card -->
             <div class="stretched column">
                 <div class="ui stackable two column centered grid cards">
+                    <!-- Confirmed Cases Stat -->
                     <div class="eight wide centered center aligned column stretched">
                         <div class="ui fluid centered card statistic padded text raised segment">
                             <h2 class="ui label center aligned">
@@ -76,6 +81,8 @@
                             <div class='center aligned value' id="totalConfirmedCases"></div>
                         </div>
                     </div>
+                    <!-- ./Confirmed Cases Stat -->
+                    <!-- Percentage Global Cases Stat -->
                     <div class="eight wide centered center aligned column stretched">
                         <div class="ui fluid card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
@@ -85,8 +92,10 @@
                             <div class='center aligned value' id="countryCasePercent"></div>
                         </div>
                     </div>
+                    <!-- ./Percentage Global Cases Stat -->
                 </div>
                 <div class="ui stackable two column centered grid">
+                    <!-- Total Fatalities Stat -->
                     <div class="eight wide centered center aligned column stretched">
                         <div class="ui fluid card statistic padded text raised segment">
                             <h2 class="label ui center aligned headerr">
@@ -96,6 +105,8 @@
                             <div class='center aligned value' id="totalDeaths"></div>
                         </div>
                     </div>
+                     <!-- ./Total Fatalities Stat -->
+                     <!-- Percentage Fatalities Stat -->
                     <div class="eight wide center aligned column stretched">
                         <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
@@ -105,8 +116,10 @@
                             <div class='center aligned value' id="countryDeathPercent"></div>
                         </div>
                     </div>
+                     <!-- ./Percentage Fatalities Stat -->
                 </div>
                 <div class="ui stackable two column centered grid">
+                    <!-- Total Recoveries Stat -->
                     <div class="eight wide center aligned column stretched">
                         <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
@@ -116,6 +129,8 @@
                             <div class='center aligned value' id="totalRecoveries"></div>
                         </div>
                     </div>
+                    <!-- ./Total Recoveries Stat -->
+                    <!-- Percentage Recoveries Stat -->
                     <div class="eight wide center aligned column stretched">
                         <div class="ui fluid center aligned card statistic padded text raised segment">
                             <h2 class="label ui center aligned header">
@@ -125,10 +140,12 @@
                             <div class='center aligned value' id="countryRecoveryPercent"></div>
                         </div>
                     </div>
+                    <!-- ./Percentage Recoveries Stat -->
                 </div>
             </div>
         </div>
         <div class="ui stackable doubling two column centered padded grid">
+            <!-- Country Drop Down Card -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <a class="ui left floated right labeled icon huge button" href="javascript:countryFilterDropdown.filterAll();dc.redrawAll();" title="Reset This Chart">
@@ -142,6 +159,8 @@
                     </div>
                 </div>
             </div>
+            <!-- ./Country Drop Down Card -->
+            <!-- Search Widget Card -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <a class="ui left floated right labeled icon huge button" href="javascript:searchCountryWidget.filterAll();dc.redrawAll();" title="Reset This Chart">
@@ -161,14 +180,17 @@
                     </div>
                 </div>
             </div>
+            <!-- ./Search Widget Card -->
         </div>
         <div class="ui stackable doubling two column centered padded grid">
+            <!-- Cases by Country Tab Card -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui top attached tabular menu">
                         <a class="item active" data-tab="total">Total</a>
                         <a class="item" data-tab="per_million">Per Million</a>
                     </div>
+                    <!-- Cases Per Country Table -->
                     <div class="ui bottom attached tab segment active" data-tab="total">
                         <a class="ui left floated right labeled icon huge button" href="javascript:totalStatsTable.filterAll();dc.redrawAll();" title="Reset This Table">
                             <i class='ui purple icon center aligned'>
@@ -205,6 +227,8 @@
                             </thead>
                         </table>
                     </div>
+                    <!-- ./Cases Per Country Table -->
+                    <!-- Cases Per Million Per Country Table -->
                     <div class="ui bottom attached tab segment" data-tab="per_million">
                         <a class="ui left floated right labeled icon huge button" href="javascript:statsPerMillion.filterAll();dc.redrawAll();" title="Reset This Table">
                             <i class='ui purple icon center aligned'>
@@ -241,14 +265,18 @@
                             </thead>
                         </table>
                     </div>
+                    <!-- ./Cases Per Million Per Country Table -->
                 </div>
             </div>
+            <!-- ./Cases by Country Tab Card -->
+            <!-- Testing Availability Tab Card -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui top attached tabular menu">
                         <a class="item active" data-tab="total-test">Total</a>
                         <a class="item" data-tab="per_thousand">Per Thousand</a>
                     </div>
+                    <!-- Total Testing Per Country Row Chart -->
                     <div class="ui bottom attached tab segment active" data-tab="total-test">
                         <a class="ui left floated right labeled icon huge button" href="javascript:testingTotalAvailability.filterAll();dc.redrawAll();" title="Reset This Chart">
                                 <i class='ui purple icon center aligned'>
@@ -259,20 +287,25 @@
                         <div class="ui clearing divider"></div>
                         <div id="testingAvailability1-row"></div>
                     </div>
+                    <!-- ./Total Testing Per Country Row Chart -->
+                    <!-- Testing Per Thousand Row Chart -->
                     <div class="ui bottom attached tab segment" data-tab="per_thousand">
                         <a class="ui left floated right labeled icon huge button" href="javascript:testingThousandAvailability.filterAll();dc.redrawAll();" title="Reset This Chart">
                             <i class='ui purple icon center aligned'>
                                 <i class='fas fa-redo individual'></i>
                             </i>
-                            Testing Per Thousand
+                            Testing Availability Per Thousand
                         </a>
                         <div class="ui clearing divider"></div>
                         <div id="testingThousandAvailability1-row"></div>
                     </div>
+                    <!-- ./Testing Per Thousand Row Chart -->
                 </div>
             </div>
+            <!-- ./Testing Availability Tab Card -->
         </div>
         <div class="ui stackable doubling two column centered padded grid">
+            <!-- Cases Per Country over Time Series -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui raised padded text raised segment">
@@ -280,7 +313,7 @@
                             <i class='ui purple icon center aligned'>
                                 <i class='fas fa-redo individual'></i>
                             </i>
-                            Daily Cases Per Country From January to April
+                            Daily New Cases Per Country From January to April
                         </a>
                         <div class="ui clearing divider"></div>
                         <div class="scrolling-wrapper">
@@ -290,6 +323,8 @@
                     </div>
                 </div>
             </div>
+            <!-- ./Cases Per Country Over Time Series -->
+            <!-- Fatalities Per Country Over Time Series -->
             <div class="stretched column">
                 <div class="ui fluid center aligned card padded text raised segment">
                     <div class="ui raised padded text raised segment">
@@ -297,7 +332,7 @@
                             <i class='ui purple icon center aligned'>
                                 <i class='fas fa-redo individual'></i>
                             </i>
-                            Fatalities Per Country From January to April
+                            Daily New Fatalities Per Country From January to April
                         </a>
                         <div class="ui clearing divider"></div>
                         <div class="scrolling-wrapper">
@@ -307,6 +342,7 @@
                     </div>
                 </div>
             </div>
+             <!-- ./Fatalities Per Country Over Time Series -->
         </div>
     </div>
     <script src="libraries/font_awesome/all.min.js"></script>
