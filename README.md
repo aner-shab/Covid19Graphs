@@ -5,7 +5,8 @@ This COVID-19 Mini Dashboard highlights countries across the globe have been aff
 #### UX and Features
 
 - As a user, I would like to gather information about testing availability in affected countries.
-- - 
+  - Row chart showing total tests available in specific countries, and tests available per thousand people in each country.
+  - The chart is displayed in two separate tabs, allowing users to toggle between the two.
 
 - As a user, I would like to derive insights on how affected countries have flattened the curve.
 - - 
@@ -27,6 +28,9 @@ This COVID-19 Mini Dashboard highlights countries across the globe have been aff
 - [D3.js v5.15.1](https://d3js.org)
 - [Semantic UI v2.4.2](http://www.semantic-ui.com/)
 
+
+#### Deployment
+- This site is hosted on GitHub Pages, deployed from the Master Branch
 
 #### Acknowledgements
 Data Aquired from [Our World In Data](https://ourworldindata.org/coronavirus)
