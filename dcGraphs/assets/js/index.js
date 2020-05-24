@@ -264,13 +264,41 @@ var testingAvailability = (ndx, chartID, column, id) => {
     chartID.on('preRedraw', function(){
         var allrows = chartID.group().all().length;
         if (allrows > 14 || allrows == 0) {
-            $('#testingAvailability1-row').height(615)
+            $(`#${id}1-row svg`).height(615)
             chartID.height(615)
                 .margins({top: heightRowChart/10, right: (rowChartWidth * 0.02), bottom: (heightRowChart/10), left: (rowChartWidth * 0.02)});
+                $(`#${id}1-row .nothing`).hide();
         } else {
             chartID.height((allrows * 50) + 40);
+            $(`#${id}1-row`).css('height','-webkit-fill-available');
+            $(`#${id}1-row svg`).show();
+            $(`#${id}1-row .nothing`).hide();
         }
     });
+
+    chartID.on('postRedraw', function() {
+        var finalrowcount = chartID.group().all().length;
+        if (finalrowcount == 0) {
+            var finalrowcount = chartID.group().all().length;
+            console.log(chartID);
+            $(`#${id}1-row svg`).hide();
+            $(`#${id}1-row`).prepend(
+                `<div class="ui placeholder segment nothing middle aligned">
+                    <div class="ui icon large header">
+                        <i class="purple icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </i>
+                        No Data Available
+                    </div>
+                </div>`
+                ).show().fadeIn(2000).css('height','-webkit-fill-available');
+            $('i.fa-exclamation-triangle').transition('jiggle');
+        }
+        else {
+            $(`#${id}1-row .nothing`).hide();
+            $(`#${id}1-row svg`).show();
+        }
+    })
 }
 
 // Remove Empty Rows for Rowchart keeping RowCap
