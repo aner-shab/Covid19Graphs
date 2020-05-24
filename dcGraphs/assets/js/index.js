@@ -21,7 +21,7 @@ var seriesRangeDiv = $('#dailyCasesPerCountryOverview').width();
 
 // Load and Process Data; Render Charts
 Promise.all([
-    d3.csv('data/owid-covid-data.csv')
+    d3.csv('dcGraphs/data/owid-covid-data.csv')
 ])
 .then(([allCovid]) =>  {
 
